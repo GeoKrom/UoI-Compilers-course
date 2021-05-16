@@ -1,0 +1,12 @@
+program swapNumbers
+
+	declare x,y,temp;
+	
+	# main #
+	{
+		input(x);
+		input(y);
+		temp:=x;
+		x:=y;
+		y:=temp;
+	}.
