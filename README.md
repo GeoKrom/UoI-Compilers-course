@@ -15,4 +15,4 @@ The back end is responsible for generating machine level code (assembly code) so
 
 # Cimple Syntax 
 
-To view the syntax of the programming language click here
+To view the syntax of the programming language click here https://github.com/GeoKrom/Compilers/tree/main/Syntax
