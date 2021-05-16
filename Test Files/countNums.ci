@@ -1,0 +1,27 @@
+program countNums
+	
+	declare x,y,count;
+	
+	function mod(in num, in div1)
+	{
+		return ((num-div1*(num/div1)));
+	}
+	function div(in num, in div1)
+	{
+		return (num/div1);
+	}
+	# main #
+	{
+		input(x);
+		input(y);
+		while(div(in x, in 10) = div(in y, in 10)){
+			if(mod(in x, in 10) = mod(in y, in 10))
+			{
+				count:=count+1;
+			
+			};
+			x:= div(in x, in 10);
+			y:= div(in y, in 10);
+		};
+		print(count);
+	}.

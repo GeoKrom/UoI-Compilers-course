@@ -1,0 +1,23 @@
+program ifTest
+
+	declare x,y,z;
+	function addNums(in x, inout y)
+	{
+		y:=(y+x-10)/(y-x);
+	}
+	# main #
+	{
+		if(y<3 and z>10)
+		{
+			input(x);
+			while(x<=5)
+			{
+				z:=x-addNums(in z, inout x);
+				y:=10+z-x;
+			};
+		}
+		else
+		{
+			z:=20/x-y;
+		};
+	}.

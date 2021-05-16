@@ -1,0 +1,38 @@
+program incaseEx
+
+	declare x,y,z,w,f,g;
+
+	# main #
+	{
+		input(x);
+		input(y);
+		input(z);
+		input(w);
+		incase
+			case(x<y and z>w)
+			{
+				f:=(x-y)/(z+w);
+				g:=f+2;
+			}
+			case(w<>10 or [x<z and y=4])
+			{
+				g:=3-f+x+y/2900;
+			}
+			case(x=2 or y<>34)
+			{
+				f:=90-(w+3*z)/(80-x*y);
+			}
+			case(y<>x and [w>z or not[x<90]])
+			{
+				if(w>2 and y<=9)
+				{
+					f:=f+g;
+				}
+				else
+				{
+					g:=f-g;
+				};
+			};
+		print(f);
+		print(g);
+	}.
