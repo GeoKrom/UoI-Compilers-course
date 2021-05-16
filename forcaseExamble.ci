@@ -1,0 +1,40 @@
+program forcaseEx
+
+	declare x,y,cost,ticket;
+	
+	# main #
+	{
+		input(ticket);
+		input(x);
+		input(y);
+		
+		forcase
+			case(x>y)
+			{
+				cost:=x-y*ticket;
+			}
+			case(x<y)
+			{
+				cost:=y-x*ticket;
+			}
+			case(x=y)
+			{
+				cost:=ticket;
+			}
+			default
+			{
+				if(ticket=0)
+				{
+					while(x<>ticket)
+					{
+						ticket:=ticket+100;
+						x:=x+15;
+					};
+					cost:=ticket*y-x/10;
+				}else
+				{
+					cost:=ticket+2*x-9+y/(x-y);
+				};
+				
+			};
+	}.
