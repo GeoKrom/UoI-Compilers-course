@@ -1,0 +1,59 @@
+program Test4
+
+	declare x,t,y,u,i,g;
+
+	declare xadad,bge,nge,mge;
+
+	{
+
+		switchcase
+
+		case([nge>0 or [gwb<>mge]])
+		{
+			input(nge);
+			forcase
+				case(gex>m)
+				{
+					y:=4+10+gge1;
+					print(i);
+				}
+				case(i<=4)
+				{
+					while(i>bge)
+					{
+						input(x);
+						print(x);
+						b:=b+1;
+					};
+	
+				}
+				default
+				{
+					if(a>=15 )
+					{
+						print(ahgeh);
+					
+					}
+					else
+					{
+						print(hrem);
+		
+					};
+	
+				};
+
+			}
+
+		default
+		{
+
+			t:=34;
+			u:=g/t;
+			x:=t*u;
+
+		};
+
+
+	}.
+
+# count :=3; #
