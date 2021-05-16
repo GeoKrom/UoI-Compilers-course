@@ -2,7 +2,7 @@
 
 This is a compiler for a custom programming language named Cimple.
 
-It is a semester project for the course CSE/MYY802 - Compilers of Department of Computer Science and Engineering, UoI.
+It is a semester project for the course CSE/MYY802 - Compilers of the Department of Computer Science and Engineering, UoI.
 
 # Front - End
 
