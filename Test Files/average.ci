@@ -1,0 +1,16 @@
+program average
+	declare x,sum,average;
+	#main#
+	{
+		input(x);
+		sum :=0;
+		count:=0;
+		while(x > 1)
+		{
+			sum := sum + x;
+			count:= count+1;
+
+		};
+		average := sum/count;
+		print(average);
+	}.

@@ -1,0 +1,26 @@
+program palindromes
+	declare rev,n,dig,temp;
+	#function that calculates modulo#
+	function mod(in num, in div)
+	{
+		return ((num-div*(num/div)));
+	}
+	#main checks and returns 1 if number is palindrome, else returns 0#
+	{
+		ten := 10;
+		input(n);
+		while(n>0)
+		{
+			dig := (mod(in n, in ten));
+			rev := ((rev*ten)+dig);
+			n := (n/10);
+		};
+		if (temp=rev)
+		{
+			print(1);
+		}
+		else
+		{
+			print(0);
+		};
+	}.

@@ -1,0 +1,16 @@
+program factorial
+	# d e c l a r a t i o n s #
+	declare x;
+	declare i,fact;
+	# m a i n #
+	{
+		input(x);
+		fact := 1;
+		i := 1;
+		while (i<=x)
+		{
+			fact := fact*i;
+			i := i+1;
+		};
+		print(fact);
+	}.

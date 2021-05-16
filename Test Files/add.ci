@@ -1,0 +1,12 @@
+program addpos
+	declare x,sum;
+	#main#
+	{
+		input(x);
+		sum :=0;
+
+		forcase
+			case(x>0) sum := sum + x;
+			default;;
+		print(sum);
+	}.
