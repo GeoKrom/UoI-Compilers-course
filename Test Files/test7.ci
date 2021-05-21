@@ -1,0 +1,46 @@
+program ForcaseCaseEx
+
+	
+	# declarations #
+	declare x,y,z,t;
+	
+	{
+		
+		input(x);
+		input(y);
+		
+		# main #
+		forcase
+			# check the numbers x and y #
+			case(x<y)
+			{
+				z:=x+1;
+				x:=x+1;
+			}
+			case(x=y)
+			{
+				z:=x-1;
+				x:=y+1;
+				t:=2*z;
+			}
+			default
+			{
+				z:=y+1;
+				y:=y-1;
+				t:=z-(x+y);
+			};
+		while(t<=5)
+		{
+			if(z=t)
+			{
+				t:=t+1;
+			}
+			else
+			{
+				t:=t+x;
+			};
+		};
+		print(x);
+		print(y);
+		print(z);
+	}.

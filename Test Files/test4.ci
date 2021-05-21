@@ -1,0 +1,55 @@
+
+program test4
+
+declare x,y,z;
+
+
+procedure A(in x, in y, inout z)
+
+declare count ;
+{
+	count:=0;
+	while(x>y)
+	{
+		y:=(x*count);
+		count:=count+1;
+	
+	};
+	
+	z:=y;
+
+}
+procedure A1(in x, in y, inout z)
+
+declare count ;
+{
+	count:=0;
+	while(x>y)
+	{
+		y:=(x*count);
+		count:=count+1;
+	
+	};
+	
+	z:=y+1;
+
+}
+
+
+#main#
+{
+	
+	input(x);
+	input(y);
+	z:=5;
+	call A(in x, in y , inout z );
+	call A1(in x, in y, inout z);
+	print(z);
+
+
+
+
+
+
+
+}.

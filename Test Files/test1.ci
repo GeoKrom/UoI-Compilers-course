@@ -1,0 +1,35 @@
+program Test1
+
+	declare a,b,c;
+	
+	{
+	input(a);
+	input(b);
+	if(a>b){
+		while(a>=b)
+		{
+	
+		c:=c+1;
+		a:=a-1;
+		};
+	
+	}
+	else{
+		while(b>=a)
+		{
+	
+		c:=c+1;
+		b:=b-1;
+	
+		};
+	
+	
+	};
+	
+	print(c);
+	print(a);
+	print(b);
+	
+	
+	
+	}.

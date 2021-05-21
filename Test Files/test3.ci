@@ -1,0 +1,54 @@
+program Test3
+
+declare x;
+declare y,z,w;
+
+function A(in x, inout y)
+	declare a;
+
+{
+	input(a);
+	x:=a+x;
+	y:=x;
+	return (y);
+	
+
+}
+
+
+
+function B(in x, in y)
+
+{
+
+	x:=y+1;
+	if(x>2){
+		
+		x:=x*((5/2)*5);
+	
+	};
+	
+	print(x);
+	return(x);
+
+}
+
+
+{
+
+	x:=1;
+	y:=2;
+	z:=3;
+
+	w:=4+A(in x,inout y)*2 ;
+	z:=B(in z, in x);
+	print(w ) ;
+	
+	print(y) ;
+
+	print(z);
+
+
+
+
+}.

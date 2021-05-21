@@ -1,0 +1,39 @@
+program SwitchCaseEx
+
+	
+	# declarations #
+	declare x,y,z,t;
+	
+	{
+		
+		x:=1;
+		y:=5;
+		
+		# main #
+		switchcase
+			# check the numbers x and y #
+			case(x<y)
+			{
+				z:=x+1;
+			}
+			case(x=y)
+			{
+				z:=x;
+			}
+			default
+			{
+				z:=y+1;
+			};
+		t:=x+y;
+		while(z<>0)
+		{
+			if(z>t)
+			{
+				x:=z+1;
+				y:=y-1;
+			};
+			z:=z-1;
+		};
+		print(x);
+		print(y);
+	}.
