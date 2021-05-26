@@ -20,5 +20,4 @@ To view the syntax of the programming language [click here](https://github.com/G
 
 # Authors
 [Lambros Vlaxopoulos](https://github.com/lamprosvlax13)
-
 [George Krommydas](https://github.com/GeoKrom)
