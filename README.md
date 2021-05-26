@@ -17,3 +17,7 @@ In particular the generated code is for the MIPS processor.
 # Cimple Syntax 
 
 To view the syntax of the programming language [click here](https://github.com/GeoKrom/Compilers/tree/main/Syntax).
+
+# Authors
+[Lambros Vlaxopoulos](https://github.com/lamprosvlax13)
+[George Krommydas](https://github.com/GeoKrom)
