@@ -4,6 +4,12 @@ This is a compiler for a custom programming language named Cimple.
 
 It is a semester project for the course CSE/MYY802 - Compilers, Department of Computer Science and Engineering, UoI.
 
+# How to run
+
+In order to run the compiler with the tests, open a terminal and write the command
+
+python3 cimple.py test.ci
+
 # Front - End
 
 The front end part analyzes the source code with lectical, syntax and sematic analyzer, in order to generate an internal
