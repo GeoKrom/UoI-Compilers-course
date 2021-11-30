@@ -1,55 +1,39 @@
+## Ονοματεπώνυμο : Λάμπρος Βλαχόπουλος , ΑΜ : 2948 , username : cse52948 
+## Ονοματεπώνυμο : Γιώργος Κρομμύδας   , ΑΜ : 3260 , username : cse63260  
 
 import sys 
 
 global list
 
-list=['program',
-    'declare',
-    'if',
-    'else',
-    'while',
-    'switchcase',
-    'forcase',
-    'incase',
-    'case',
-    'default',
-    'not',
-    'and',
-    'or',
-    'function',
-    'procedure',
-    'call',
-    'return',
-    'in',
-    'inout',
-    'input',
-    'print'
-    ]
+list=['program','declare','if','else','while','switchcase','forcase',
+    'incase','case','default','not','and','or','function',
+    'procedure','call','return','in','inout','input','print']
 
-###########
-scopeList =[""]
-nesting=1
-currentScope=0
-List_after_delete_scope=[]
+########### GLOBAL VARIABLES #################
+scopeList = [""]
+nesting = 1
+currentScope = 0
+List_after_delete_scope = []
 argumentuniqeID = 0
 entityuniquqeID = 0
 functionL = {}
 listofFuncPars = []
-functionsList=[]
-procedureList=[]
-procedureL={}
-inFunction=False
-foundreturn=False
+functionsList = []
+procedureList = []
+procedureL = {}
+inFunction = False
+foundreturn = False
 ###########
-T_i=0 
-counter_next_quad=0
-quadList=[]
-main_program_name=""
-have_sub_program=False
-list_of_variables=[]
-subProgramType=""
-subprogram_name=""
+T_i = 0 
+counter_next_quad = 0
+quadList = []
+main_program_name = ""
+have_sub_program = False
+list_of_variables = []
+subProgramType = ""
+subprogram_name = ""
 
+####################### LECTICAL ANALYSIS #######################
 
 class Token:
  
@@ -58,320 +42,273 @@ class Token:
         self.tokenType=tokenType
         self.tokenString=tokenString
         self.lineNo=lineNo
-    
-##Λεκτική Ανάλυση
-counter_for_lines=1
+
+counter_for_lines = 1
+
 def lexical_analyze():
 
     global  counter_for_lines
     
-    tokenString= []        ##λεκτική μονάδα
-    counter_for_letters = 0      #μετρητης γραμμάτων
+    tokenString= []        ## token
+    counter_for_letters = 0      # letter counter
     
-    char=infile.read(1)      #Διαβάζω 1 χαρακτήρα
+    char = infile.read(1)      # Read first character
     
-    # start                                      #Το while υλοποιεί την κατάσταση με τους λευκούς χαρακτηρες space kai newline.
+    # start of lex automaton
+    #The while loop contains the whitespace characters(" ", \t, \n)
     while True:
-    	 if char==" " or char=="\t"  :
-             
-            char=infile.read(1)
+    	 if char == " " or char == "\t":
+            char = infile.read(1)
     	 elif char.isspace():
-    	 	if char =="\n" :
-    	 		counter_for_lines+=1
+    	 	if char == "\n":
+    	 		counter_for_lines += 1
     	 		return lexical_analyze()
-            
     	 else:       
-       
             break
-    
-    
-    #number
+
+    # Digit state of automaton
     if (char.isdigit()):
         tokenString.append(char)
         
-        char=infile.read(1)
+        char = infile.read(1)
         
         while(char.isdigit()):
-        
             tokenString.append(char)
-            char=infile.read(1)
-            
-        infile.seek(infile.tell()-1) ########ΑΦου κροιφοκοιτάξω μεσα στο while και βρω κάτι αλλο απο κάθε κατάσταση γυρνάω μια θέση πίσω τον μετρητη του αρχειου που μου δειχνει τη θεση # infile.tell() μετρητης τρεχουσας θεσης  # infile.seek() βαζω εγω το μετρητη στη θεση που θελω 
+            char = infile.read(1)
+
+        infile.seek(infile.tell()-1) # Look the next character and turn the pointer to previous one
         
         if char.isalpha():
-        	
-        	t=''.join(tokenString)
-        	print("Error : Δημιουργετε String που ξεκινά με αριθμούς(",t,") στη γραμμή: ",counter_for_lines)
+        	t = ''.join(tokenString)
+        	print("Error : There is a string which starts with numbers (",t,") in line: ", counter_for_lines)
         	sys.exit()
                 
-        number=''.join(tokenString)
-        if (int(number) < -(pow(2,32)-1) or int(number) >(pow(2,32) -1) ):     #ελεγχος για το αν ο αριθμος ειναι αποδεκτος απο τη γλωσσα
-            print("Ο αριθμός ",number, "είναι έξω από τα όρια 2^32 -1")
+        number = ''.join(tokenString)
+        if (int(number) < -(pow(2,32)-1) or int(number) > (pow(2,32) - 1) ):  # Check if the number is valid for the language
+            print("The number ",number, "is out of bounds of 2^32 - 1")
             sys.exit()
           
-       
-        return Token("number",number.strip(),counter_for_lines)
+        return Token("number", number.strip(), counter_for_lines)
         sys.exit()
         
         
-     #identifier/keywordString
+    # identifier/keywordString state of automaton
     elif (char.isalpha()):
-        counter_for_letters+=1
+        counter_for_letters += 1
         tokenString.append(char)
-        char=infile.read(1)
+        char = infile.read(1)
         
-        while (char.isalpha() or char.isdigit() ):
+        while (char.isalpha() or char.isdigit()): # Continue read the word until EOF
             tokenString.append(char)
-            counter_for_letters+=1
-            char=infile.read(1)
-           
-          
+            counter_for_letters += 1
+            char = infile.read(1)
+
         infile.seek(infile.tell()-1)   
-        tokenString=''.join(tokenString)
+        tokenString =''.join(tokenString)
        
-        if counter_for_letters<=30:
-        
-           
+        if counter_for_letters <= 30:
              if(tokenString.strip() in list): 
-                type="identifier"
+                type = "identifier"
              else:
-                type="keyword"
+                type = "keyword"
              return Token(type,tokenString.strip(),counter_for_lines)
              sys.exit()
         else:
-            print("Το string",tokenString.strip()," ειναι εκτός ορίων καθώς η γλώσσα υποστηρίζει keywords μέχρι και 30 χαρακτηρες\n")
-          
+            print("The string", tokenString.strip(), " is out of bounds. It should have less than 30 characters\n")
             sys.exit()
-     #addOperator  
-    elif char=="+":
+    
+    # addOperator  state of automaton
+    elif char == "+":
         addOperator="+"
-      
         return Token("addOperator",addOperator.strip(),counter_for_lines)
         sys.exit()
-        
-    elif char =="-":
-        addOperator="-"
-       
+
+    elif char == "-":
+        addOperator="-"       
         return Token("addOperator",addOperator.strip(),counter_for_lines)
         sys.exit()
-     #mulOperator  
-    elif char =="*":
+    
+    # mulOperator state of automaton  
+    elif char == "*":
         mulOperator="*"
-      
         return Token("mulOperator",mulOperator.strip(),counter_for_lines)
         sys.exit()
      
-    elif char =="/":
+    elif char == "/":
         mulOperator="/"
-     
         return Token("mulOperator",mulOperator.strip(),counter_for_lines)
         sys.exit()
-     #groupSymbol
-    elif char=="{":
-        groupSymbol="{"
-       
-        return Token("groupSymbol",groupSymbol.strip(),counter_for_lines)
+    
+    # groupSymbol state of automaton
+    elif char == "{":
+        groupSymbol = "{"
+        return Token("groupSymbol", groupSymbol.strip(), counter_for_lines)
         sys.exit()
         
-    elif char =="}":
-        groupSymbol="}"
-       
-        return Token("groupSymbol",groupSymbol.strip(),counter_for_lines)
+    elif char == "}":
+        groupSymbol = "}"
+        return Token("groupSymbol", groupSymbol.strip(), counter_for_lines)
         sys.exit()
         
-    elif char =="(":
-        groupSymbol="("
-        
-        return Token("groupSymbol",groupSymbol.strip(),counter_for_lines)
+    elif char == "(":
+        groupSymbol = "("
+        return Token("groupSymbol", groupSymbol.strip(), counter_for_lines)
         sys.exit()
         
-    elif char ==")":
-        groupSymbol=")"
-      
-        return Token("groupSymbol",groupSymbol.strip(),counter_for_lines)
+    elif char == ")":
+        groupSymbol = ")"
+        return Token("groupSymbol", groupSymbol.strip(), counter_for_lines)
         sys.exit()
-        
-    elif char =="[":
-        groupSymbol="["
-       
-        return Token("groupSymbol",groupSymbol.strip(),counter_for_lines)
+
+    elif char == "[":
+        groupSymbol = "["
+        return Token("groupSymbol", groupSymbol.strip(), counter_for_lines)
         sys.exit()
      
-    elif char =="]":
-        groupSymbol="]"
-        
-        return Token("groupSymbol",groupSymbol.strip(),counter_for_lines)
+    elif char == "]":
+        groupSymbol = "]"
+        return Token("groupSymbol", groupSymbol.strip(), counter_for_lines)
         sys.exit()
         
-     #delimiter
-        
-    elif char==",":
-        delimiter=","
-        
-        return Token("delimiter",delimiter.strip(),counter_for_lines)
-        sys.exit()
-        
-    elif char==";":
-        delimiter=";"
-      
-        return Token("delimiter",delimiter.strip(),counter_for_lines)
-        sys.exit()
-     #assignment   
-        
-    elif char ==":":      
-        char=infile.read(1)
-        if char=="=":
-            assignment=":="
-           
-            return Token("assignment",assignment.strip(),counter_for_lines)
-            sys.exit()
     
-    
-        else:
-                
-                print ("Error : Mετά απο ':' έπρεπε να έρθει '=' ώστε να έχουμε ':=' που υποστηρίζει η γλώσσα.\nΟ χαρακτήρας που έλαβε ήταν",char,"στη γραμμή:",counter_for_lines)
-                
-                sys.exit()
-                
-      #relOperator
-      
-    elif char=="<":
-        char=infile.read(1)
-        if(char=="="):
-            relOperator="<="
-            
-            return Token("relOperator",relOperator.strip(),counter_for_lines)
-            sys.exit()
-        elif char ==">":
-            relOperator="<>"
-            
-            return Token("relOperator",relOperator.strip(),counter_for_lines)
-            sys.exit()
+    # delimiter state of automaton    
+    elif char == ",":
+        delimiter = ","
         
+        return Token("delimiter", delimiter.strip(), counter_for_lines)
+        sys.exit()
+    
+    elif char == ";":
+        delimiter = ";"
+        return Token("delimiter", delimiter.strip(), counter_for_lines)
+        sys.exit()
+    
+    # assignment state of automaton
+    elif char == ":":      
+        char = infile.read(1)
+        if char == "=":
+            assignment = ":="
+            return Token("assignment", assignment.strip(), counter_for_lines)
+            sys.exit()
+        else:  
+            print ("Error : After ':' should come '=' so we can have ':=' which belongs in the language.\nThe charcter that read was", char, "in line:", counter_for_lines)   
+            sys.exit()       
+    
+    # relOperator state of automaton  
+    elif char == "<":
+        char = infile.read(1)
+        if(char == "="):
+            relOperator = "<="
+            return Token("relOperator", relOperator.strip(), counter_for_lines)
+            sys.exit()
+        elif char == ">":
+            relOperator = "<>"
+            return Token("relOperator", relOperator.strip(), counter_for_lines)
+            sys.exit()      
         else:
             infile.seek(infile.tell() - 1)
-            relOperator="<"
-           
-            return Token("relOperator",relOperator.strip(),counter_for_lines)
+            relOperator = "<"
+            return Token("relOperator", relOperator.strip(), counter_for_lines)
             sys.exit()
-            
-            
-    elif char==">":
-       
-        char =infile.read(1)
-        if char=="=":
-            relOperator=">="
-         
-            return Token("relOperator",relOperator.strip(),counter_for_lines)
+
+    elif char == ">":
+        char = infile.read(1)
+        if char == "=":
+            relOperator = ">="
+            return Token("relOperator", relOperator.strip(), counter_for_lines)
             sys.exit()
         else:
             infile.seek(infile.tell() - 1)
-            relOperator=">"
-           
-            return Token("relOperator",relOperator.strip(),counter_for_lines)
+            relOperator = ">"
+            return Token("relOperator", relOperator.strip(), counter_for_lines)
             sys.exit()
             
-    elif char=="=":
-        relOperator="="
-       
-        return Token("relOperator",relOperator.strip(),counter_for_lines)
+    elif char == "=":
+        relOperator = "="
+        return Token("relOperator", relOperator.strip(), counter_for_lines)
         sys.exit()
-    #τέλος προγραμματος
-    elif char==".":
-        telos_programmatos="."
-        
-        return Token("finish",telos_programmatos.strip(),counter_for_lines)
+    
+    # finish state of automaton
+    elif char == ".":
+        end_of_program = "."
+        return Token("finish", end_of_program.strip(), counter_for_lines)
         sys.exit()
-    #κανω skip τα σχολια 
-    elif char=="#":                       # αν ο χαρακτηρας ειναι #
-        char=infile.read(1)                 # διαβασε τον επομενο       
-        while(char!="#"):                   # οσο ο χαρακτηρας δεν ειναι # 
-            char=infile.read(1)                 #διαβασε τον επομενο
-            if char=="":                        #αν ο χαρακτήρας ειναι το eof =""
-                
-                print("Error: Βρέθηκε σχόλιο που δεν έκλεισε στη γραμμή :",counter_for_lines)
+    
+    # Comments state of auromaton 
+    elif char == "#":                         # Comments start with '#' character
+        char = infile.read(1)                 # Read the next     
+        while(char != "#"):                   # Read every character after '#' 
+            char = infile.read(1)              
+            if char == "":                    # If the final character is not '#' then error. Comments have systax '# anything #'
+                print("Error: Found a comment which didn't close in line: ", counter_for_lines)
                 sys.exit()
-            
         return lexical_analyze()                
-        
-            ##eof
-    elif  char=="":
-    	
-    	return Token("EOF","END OF FILE",counter_for_lines)
+    # eof state of automaton
+    elif char == "":
+    	return Token("EOF", "END OF FILE", counter_for_lines)
     	sys.exit()
     
     else:
-        print ("H γλώσσα δεν υποστηρίζει χαρακτήρα που Βρεθηκε στην γραμμη:",counter_for_lines,"\nΟ χαρακτήρας ήταν :", char)
-      
+        print ("The language does not support this character in line :",counter_for_lines,"\nThe character was :", char)
        	sys.exit()
 
 
-##Συντακτική ανάλυση
+######################### SYNTAX ANALYSIS #########################
 
 def syntax_analyze():    
 	global token
-    
-	token=lexical_analyze()
+	token = lexical_analyze()
 	program()
-		
-				
+	
 def program():
-
-    
     global token
     global main_program_name
-    global nesting,scopeList ###########
-    l=token.lineNo	
-    if(token.tokenString=="program"):
+    global nesting, scopeList
+    
+    l = token.lineNo	
+    if(token.tokenString == "program"):
         token=lexical_analyze()
-        if(token.tokenType=="keyword"):
-        
-            main_program_name=token.tokenString
-            scope=Scope(nesting) ##
-            token=lexical_analyze()
+        if(token.tokenType == "keyword"):
+            main_program_name = token.tokenString
+            scope = Scope(nesting) ##
+            token = lexical_analyze()
             ###
-            ent=Entity(main_program_name,'main',8) ##
+            ent = Entity(main_program_name,'main',8) ##
             scope.addentity(ent)
-            scopeList[currentScope]=scope
+            scopeList[currentScope] = scope
             ###
             block(main_program_name)            
-            if token.tokenString==".":
+            if token.tokenString == ".":
                 genquad("halt","_","_","_")
                 genquad("end_block",main_program_name,"_","_")
                 List_after_delete_scope.append(scopeList.pop(0))     ###
-               
-                token=lexical_analyze()
-                if(token.tokenString!="END OF FILE"):
-                    x=""
-                    while(1):
-                        
-                        if(token.tokenString!="END OF FILE"):
-                            
-                            x=x+"\n"+token.tokenString
-                            token=lexical_analyze()
-                            continue;
+                token = lexical_analyze()
+                if(token.tokenString != "END OF FILE"):
+                    x = ""
+                    while(1):  
+                        if(token.tokenString != "END OF FILE"):
+                            x = x +"\n" +token.tokenString
+                            token = lexical_analyze()
+                            continue
                         else:
-                            break;
-                    print("WARNING : Βρέθηκε κώδικας μετά από το τέλος προγράμματος '.' , στην γραμμή :",token.lineNo,"\nΟ κώδικας που ακολουθεί τον τερματισμό σε λεκτικές μονάδες είναι: ",x )
+                            break
+                    print("WARNING : Found block of code after '.' , in line :",token.lineNo,"\nThe tokens of the block which follows after the end are: ",x )
                     sys.exit()
             else:
-                print("ERROR: Δεν βρέθηκε '.' στο τελος του προγράμματος στη γραμμή",token.lineNo,"\nΒρεθηκε :'",token.tokenString,"'")
-                sys.exit()	
-                  
+                print("ERROR: Didn't find '.' at the end of program in line ",token.lineNo,"\nIt found :'",token.tokenString,"'")
+                sys.exit()	          
         else:
-            print("ERROR: Δεν βρέθηκε όνομα μεταβλητής στη γραμμή",l,"\nΒρέθηκε ",token.tokenString)
+            print("ERROR: Didn't find a name of a variable in line",l,"\nFound ",token.tokenString)
             sys.exit()
     else:
-        print("Δεν υπάρχει η δεσμευμένη λέξη 'program' στην αρχή του προγράμματος","\nΣτην γραμμή ",l,"Βρέθηκε ",token.tokenString)
+        print("The forb_word 'program' does not exist at the start of the program","\nIn line ",l,"Found ",token.tokenString)
         sys.exit()
     				
 			
 def block(func_name):
-
     global token
     global scopeList,inFunction,main_program_name
-   
-    
+
     declarations()   
     subprograms()
    
@@ -379,7 +316,6 @@ def block(func_name):
         inFunction=False   #den exw sunarthsh h diadikasia ka9ws to name pou phra apo program den alla3e meta apo subprograms
         genquad("begin_block",main_program_name,"_","_")
     else:
-        
         scope=scopeList[0] ################
         entL=scope.returnListOfEntitys()
         ent=entL[0]
@@ -387,7 +323,6 @@ def block(func_name):
         entL[0]=ent
         scope.setListOfEntitys(entL) ###########
         genquad("begin_block",func_name,"_","_")
-       
     statements()
 	
 def subprograms():
@@ -1288,7 +1223,7 @@ def INTEGER():
         print("ERROR : Το πρόγραμμα περίμενε 'εναν ακεραιο αριθμο' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
         sys.exit()
 
-##### ενδιαμεσος κωδικας 
+##### INTERMEDIETE CODE ########### 
 
 
 class Quad:
@@ -1552,13 +1487,11 @@ def searchScope(searchElement):
 
 
     return vforreturn
-
-
-###########Σημασιολογική ########
+ 
+########### SEMATIC ANALYSIS ############
 
 def Symasiologikh_analysh():
-    global List_after_delete_scope, listofFuncPars,functionL
-          
+    global List_after_delete_scope, listofFuncPars,functionL 
     ##elexoi an otan kaloume mia synarthsh an einai idoi oi parametoi kai me thn idia seira
     #Ελεγχοι για το όταν καλούμε ένα subprogramm αν καλείτε με τους σωστους παραμετρους και με την ίδια σειρα
     for x in listofFuncPars:
@@ -1577,7 +1510,7 @@ def Symasiologikh_analysh():
                             arg2=list_arg2[i]
                             if arg.parMode != arg2.parMode :
                                 print("Detected a wrong parameter in funtion ",x.name)
-                                print("Error Βρέθηκε λάθος παράμετρος στη συναρτηση ή διαδικασία με όνομα:",x.name)
+                                print("Error: Found a wrong parameter in function or procedure with name:",x.name)
                                 sys.exit()
                             i=i+1
                     else:
@@ -1585,9 +1518,8 @@ def Symasiologikh_analysh():
                             continue;
                         else:    
                             print("Detected a wrong parameter in funtion ",x.name,"htht ")
-                            print("Error Βρέθηκε λάθος παράμετρος στη συναρτηση ή διαδικασία με όνομα:",x.name)
+                            print("Error: Found a wrong parameter in function or procedure with name:",x.name)
                             sys.exit()
-
     ##kanei update ola ta framelength
     for x in List_after_delete_scope:
         xlist=x.returnListOfEntitys()
@@ -1602,7 +1534,7 @@ def Symasiologikh_analysh():
                     yl.setframelength(x.getTotalOffset())
 
 
-###########Πινακας συμβόλων ########
+########### SYMBOL TABLE #############
 def printSymbolTable():## kanei print ta scopes
     
     global List_after_delete_scope,SymbolTableFile
@@ -1624,7 +1556,7 @@ def printSymbolTable():## kanei print ta scopes
         print("---------------------------------------------\n")
         SymbolTableFile.write("---------------------------------------------------------\n")
 
-#########τελικος################
+######### FINAL CODE ################
 def gnlvcode(v):
     global nesting
     for x in scopeList:
@@ -1860,12 +1792,12 @@ def FinalCode_Transformer(quad):
         v = searchScope(quad.x.strip())
         scope=scopeList[0]
         localVar=scope.varLocal(v.name)
-        ret ='Σφάλμα Προσοχή!!!!'
+        ret ='Error!!!!'
         for scope in scopeList:
             if 1 == scope.varLocal(v.name):
                 variableNesting=scope.nestingLevel
 
-        if nesting == variableNesting or v.parMode == '' and localVar == 1:
+        if nesting == variableNesting or v.parMode == 'in' and localVar == 1:
             
             ret = '\t\taddi $t0,$sp,-'+ str(v.offset) + '\n\t\tsw $t0,-'+ str(temp) +'($fp)'
         elif nesting == variableNesting or v.parMode == 'inout':
@@ -1893,7 +1825,7 @@ def FinalCode_Transformer(quad):
        
         ret =ret + '\t\taddi $sp,$sp,'+str(frameLengthValu.framelength) + '\n\t\tjal '+ quad.x + '\n\t\taddi $sp,$sp,'+ str(-frameLengthValu.framelength)  
     else:
-        ret = "Error: Δεν μπορώ να μετρέψω εντολές assemply!!!!"
+        ret = "Error: Cannot convert instructions to assembly!!!!"
 
     if flag == True:
         ret = '\tL_' + str(quad.ID) + ': \n' + ret
@@ -1921,12 +1853,12 @@ def main(args):
     global infile,quadList,intFile,cFile,list_of_variables,have_sub_program,scopeList,SymbolTableFile
 	
     if(len(args) !=2):
-        print("Δώσε αρχείο με τον κωδικα")
+        print("Error in parsing: Not enough arguments. Files are missing!")
         sys.exit()
 		
     in_file=args[1]
     if (not in_file.endswith('.ci')):
-        print("Το αρχείο πρέπει να έχει επεκταση '.ci' ")
+        print("Error: The file should end with '.ci' ")
         exit()	
 	
     try:
@@ -1934,7 +1866,7 @@ def main(args):
         intFile = open("int_file.int","w")
         
     except OSError:
-        print("Error")
+        print("Error: The system cannot open the file!")
         sys.exit()
       		
     syntax_analyze()
@@ -1945,7 +1877,7 @@ def main(args):
         SymbolTableFile = open("SymbolTableFile.txt","w")
      
     except OSError:
-        print("Το σύστημα δε μπορεί να γράψει αρχείο")
+        print("Error: The system cannot open the file!")
         sys.exit()
     printSymbolTable()
     SymbolTableFile.close()
@@ -1955,7 +1887,7 @@ def main(args):
        
         
         except OSError:
-            print("Το σύστημα δε μπορεί να γράψει αρχείο")
+            print("Error: The system cannot open the file!")
             sys.exit()
             
         
@@ -1970,7 +1902,6 @@ def main(args):
     infile.close()
     intFile.close()
     fCode.close()
-if __name__ =="__main__":
-	main(sys.argv)	
-    
 
+if __name__ =="__main__":
+	main(sys.argv)
