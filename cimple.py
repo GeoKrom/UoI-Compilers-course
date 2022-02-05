@@ -1,8 +1,4 @@
-## Ονοματεπώνυμο : Λάμπρος Βλαχόπουλος , ΑΜ : 2948 , username : cse52948 
-## Ονοματεπώνυμο : Γιώργος Κρομμύδας   , ΑΜ : 3260 , username : cse63260  
-
 import sys 
-
 global list
 
 list=['program','declare','if','else','while','switchcase','forcase',
