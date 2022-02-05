@@ -1,3 +1,6 @@
+## Ονοματεπώνυμο : Λάμπρος Βλαχόπουλος , ΑΜ : 2948 , username : cse52948 
+## Ονοματεπώνυμο : Γιώργος Κρομμύδας   , ΑΜ : 3260 , username : cse63260  
+
 import sys 
 
 global list
@@ -54,13 +57,13 @@ def lexical_analyze():
     # start of lex automaton
     #The while loop contains the whitespace characters(" ", \t, \n)
     while True:
-    	 if char == " " or char == "\t":
+    	if char == " " or char == "\t":
             char = infile.read(1)
-    	 elif char.isspace():
+    	elif char.isspace():
     	 	if char == "\n":
     	 		counter_for_lines += 1
     	 		return lexical_analyze()
-    	 else:       
+    	else:       
             break
 
     # Digit state of automaton
@@ -264,7 +267,7 @@ def program():
     
     l = token.lineNo	
     if(token.tokenString == "program"):
-        token=lexical_analyze()
+        token = lexical_analyze()
         if(token.tokenType == "keyword"):
             main_program_name = token.tokenString
             scope = Scope(nesting) ##
@@ -289,16 +292,16 @@ def program():
                             continue
                         else:
                             break
-                    print("WARNING : Found block of code after '.' , in line :",token.lineNo,"\nThe tokens of the block which follows after the end are: ",x )
+                    print("Warning: Found block of code after '.' , in line :",token.lineNo,"\nThe tokens of the block which follows after the end are: ",x )
                     sys.exit()
             else:
-                print("ERROR: Didn't find '.' at the end of program in line ",token.lineNo,"\nIt found :'",token.tokenString,"'")
+                print("Error: Didn't find '.' at the end of program in line ",token.lineNo,"\nIt found :'",token.tokenString,"'")
                 sys.exit()	          
         else:
-            print("ERROR: Didn't find a name of a variable in line",l,"\nFound ",token.tokenString)
+            print("Error: Didn't find a name of a variable in line",l,"\nFound ",token.tokenString)
             sys.exit()
     else:
-        print("The forb_word 'program' does not exist at the start of the program","\nIn line ",l,"Found ",token.tokenString)
+        print("Error: The forb_word 'program' does not exist at the start of the program","\nIn line ",l,"Found ",token.tokenString)
         sys.exit()
     				
 			
@@ -309,250 +312,226 @@ def block(func_name):
     declarations()   
     subprograms()
    
-    if func_name==main_program_name:
-        inFunction=False   #den exw sunarthsh h diadikasia ka9ws to name pou phra apo program den alla3e meta apo subprograms
+    if func_name == main_program_name:
+        inFunction = False   # Did not read function or procedure token, so it's the name of the program
         genquad("begin_block",main_program_name,"_","_")
     else:
-        scope=scopeList[0] ################
-        entL=scope.returnListOfEntitys()
-        ent=entL[0]
+        scope = scopeList[0] ################
+        entL = scope.returnListOfEntitys()
+        ent = entL[0]
         ent.setstartQuad(nextquad())
-        entL[0]=ent
+        entL[0] = ent
         scope.setListOfEntitys(entL) ###########
         genquad("begin_block",func_name,"_","_")
     statements()
 	
 def subprograms():
     global token, have_sub_program
-    while(token.tokenString=="function" or token.tokenString=="procedure"):
-        have_sub_program=True
+    while(token.tokenString == "function" or token.tokenString == "procedure"):
+        have_sub_program = True
         subprogram()
  
 def subprogram():
     global token,subProgramType,subprogram_name,foundreturn
 	
-    global functionsList,variableforSeeReturnCheck,functionL,nesting,currentScope,List_after_delete_scope,inFunction   #####
-    global procedureList,procedureL
+    global functionsList, variableforSeeReturnCheck, functionL, nesting, currentScope, List_after_delete_scope, inFunction   #####
+    global procedureList, procedureL
     
-    if(token.tokenString=="function" or token.tokenString=="procedure"):
-        if(token.tokenString=="function"):
-            subProgramType="function"
-            inFunction=True
+    if(token.tokenString == "function" or token.tokenString == "procedure"):
+        if(token.tokenString == "function"):
+            subProgramType = "function"
+            inFunction = True
         else:
-            subProgramType="procedure"
-            inFunction=False
+            subProgramType = "procedure"
+            inFunction = False
             
-        token=lexical_analyze()
-        nesting=nesting+1          #####
-        if(token.tokenType=="keyword"):
+        token = lexical_analyze()
+        nesting = nesting+1          #####
+        if(token.tokenType == "keyword"):
             
                 if token.tokenString in functionL or token.tokenString in procedureL : ##
-                   
-                    print("Error: Βρεθηκε συνάρτηση ή διαδικασια με το ίδιο όνομα:","'",token.tokenString,"'")
+                    print("Error: Found a function or a procedure with the same name: ","'",token.tokenString,"'")
                     sys.exit() ##
-                
-                if(subProgramType=="function"):
+            
+                if(subProgramType == "function"):
                     functionsList.append(token.tokenString)
-                   
                     functionL.update({token.tokenString:0})
-                else:
-                    
+                else:  
                     procedureList.append(token.tokenString)
-                    
                     procedureL.update({token.tokenString:0})
-                    
-               
-                
+
                 serSerTemp = Entity('', '', 0)
                 serSerTemp = searchScope(token.tokenString)
-                if token.tokenString== serSerTemp.name:
-                   
-                    print("Βρέθηκε συνάρτηση με όνομα ορισμένης μεταβλητής")
-                    print("Το ονομα της συναρτησης που βρεθηκε ειναι",token.tokenString,"Στη γραμμη",token.lineNo)
+                
+                if token.tokenString == serSerTemp.name:   
+                    print("Error: Found a function with the same name with a declared variable!")
+                    print("The name of the function that was found is ",token.tokenString," in line ",token.lineNo)
                     sys.exit()
                 
-                subprogram_name=token.tokenString
-                line=token.lineNo
-                scope=Scope(nesting)
-                
-                ent=Entity(subprogram_name,subProgramType,8) 
+                subprogram_name = token.tokenString
+                line = token.lineNo
+                scope = Scope(nesting)
+                ent = Entity(subprogram_name,subProgramType,8) 
                 scope.addentity(ent)
                 scopeList.insert(0,scope)                
-                token=lexical_analyze()
+                token = lexical_analyze()
                
-                if(token.tokenString=="("):
-                    token=lexical_analyze()
+                if(token.tokenString == "("):
+                    token = lexical_analyze()
                     formalparlist()
                    
-                    if (token.tokenString==")"):
-                        token=lexical_analyze()
+                    if (token.tokenString == ")"):
+                        token = lexical_analyze()
                         
                         block(subprogram_name)
                         
-                        if (foundreturn!=True and subProgramType=="function"):
-                            print("Βρέθηκε συναρτηση χωρις Return.Το ονομα της είναι:",subprogram_name,"Στη γραμμή",line)
+                        if (foundreturn != True and subProgramType == "function"):
+                            print("Error: Found a function without the token return. The name of the function is: ",subprogram_name," in line ",line)
                             sys.exit()
-                            
-                        foundreturn=False
                         
-                        scopePrevious=scopeList[currentScope+1] #######
-                        scope=scopeList[currentScope]
-                        enL=scope.returnListOfEntitys()
-                        ent=enL[0]
-                        entemp=enL[-1]
+                        foundreturn = False
+                        scopePrevious = scopeList[currentScope+1] #######
+                        scope = scopeList[currentScope]
+                        enL = scope.returnListOfEntitys()
+                        ent = enL[0]
+                        entemp = enL[-1]
                         ent.changeoffset(scopePrevious.getTotalOffset()) ### +4 gia A diaforetiko apo metavlhth
                         ent.setframelength(entemp.returnoffset())
                         scopePrevious.addentity(ent)
                         genquad("end_block",subprogram_name,"_","_")
-                        nesting=nesting-1
+                        nesting = nesting-1
                         List_after_delete_scope.append(scopeList.pop(0)) #######
-                       
                     else:
-                        
-                        print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+                        print("Error: The program waited ')' in line:",token.lineNo,"\nFound ",token.tokenString)
                         sys.exit()
                 
                 else:
 				
-                    print("ERROR : Το πρόγραμμα περίμενε '(' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+                    print("Error: The program waited '(' in line:",token.lineNo,"\nFound ",token.tokenString)
                     sys.exit()
-                
-            
-                
         else:
-			
-            print("ERROR : Το πρόγραμμα περίμενε 'όνομα μεταβλητής' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited 'Variable name' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
             
-    if(subProgramType=="function"):
-        variableforSeeReturnCheck=functionsList.pop(0) 
-           
+    if(subProgramType == "function"):
+        variableforSeeReturnCheck = functionsList.pop(0)   
     else:
-                
-        variableforSeeReturnCheck=procedureList.pop(0)
-        
+        variableforSeeReturnCheck = procedureList.pop(0)
 
-
-    
 def formalparlist():
     global token
-    if(token.tokenString=="in" or token.tokenString=="inout"):
+    
+    if(token.tokenString == "in" or token.tokenString == "inout"):
         formalparitem()
-        while(token.tokenString==","):
-            token=lexical_analyze()
+        while(token.tokenString == ","):
+            token = lexical_analyze()
             formalparitem()
     else:	
-        print("ERROR : Το πρόγραμμα περίμενε 'in' ή 'inout' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited 'in' or 'inout' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()		
 			
 
 def formalparitem():
     global token
-    global listofFuncPars,scopeList #####
+    global listofFuncPars, scopeList #####
     
-    scope=scopeList[currentScope]
-    if(token.tokenString=="in" or token.tokenString=="inout"):
-        if token.tokenString=="in":
-            type_="in"
+    scope = scopeList[currentScope]
+    if(token.tokenString == "in" or token.tokenString == "inout"):
+        if token.tokenString == "in":
+            type_= "in"
         else:
-            type_="inout"
-      
-        token=lexical_analyze()
-        if(token.tokenType=="keyword"):
-            ent=Entity(token.tokenString,"var",(scope.getTotalOffset()+4))
+            type_= "inout"
+        token = lexical_analyze()
+        if(token.tokenType == "keyword"):
+            ent = Entity(token.tokenString,"var",(scope.getTotalOffset()+4))
             ent.setParMode(type_)
             scope.addentity(ent)
-            arg=Argument(type_,"int")
-            entL=scope.returnListOfEntitys() ##Παιρνουμε τη λιστα με entitys που ειναι στο scope
-            ent=entL[0] #pairnei to teleutaio entity pou einai to entity tou subprogram        #####Dangerr !!
-            ent.setArgument(arg)#vazoume to argument sto entity
-            entL[0]=ent # antika8ista sthn teleutaia 8esh ths listas me ta entity to entity
+            arg = Argument(type_,"int")
+            entL = scope.returnListOfEntitys()                  # Take the entities of the current scope
+            ent = entL[0]                                       # Take the last entity which is a sub program
+            ent.setArgument(arg)                                # Insert the argument to entity
+            entL[0] = ent                                       # Change the last entity of the list
             scope.setListOfEntitys(entL)
-            scopeList[currentScope]=scope
-            token=lexical_analyze()
+            scopeList[currentScope] = scope
+            token = lexical_analyze()
         else:		
-            print("ERROR : Το πρόγραμμα περίμενε 'keyword/ονομα μεταβλητής' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString) 
+            print("Error: The program waited 'keyword/variable name' in line:",token.lineNo,"\nFound ",token.tokenString) 
             sys.exit()    
     else:
-        print("ERROR : Το πρόγραμμα περίμενε 'in' or 'inout' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited 'in' or 'inout' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
-		
-								
+
 def actualparlist(sub_prog_name):
-    global token
-    
+    global token    
     global listofFuncPars 
    
     x = Entity(sub_prog_name,"SubProgramForCheck",0) 
     listofFuncPars.insert(0,x) 
-   
-    parameters=[]
-    parameter=actualparitem()
+    parameters = []
+    parameter = actualparitem()
     parameters.append(parameter)
     
-    while(token.tokenString==","):
-        token=lexical_analyze()
-        parameter=actualparitem()
+    while(token.tokenString == ","):
+        token = lexical_analyze()
+        parameter = actualparitem()
         parameters.append(parameter)
-       
     return parameters
 
 def actualparitem():
     global token
     global listofFuncPars
     
-    x=listofFuncPars[0]
+    x = listofFuncPars[0]
     
-    if(token.tokenString=="in"):
-        token=lexical_analyze()
-        arg=Argument("in","int")
+    if(token.tokenString == "in"):
+        token = lexical_analyze()
+        arg = Argument("CV","int")
         x.setArgument(arg)
-        exp=expression()
+        exp = expression()
         return (exp,"CV")
-    elif(token.tokenString=="inout"):
-        token=lexical_analyze()
-        arg=Argument("inout","int")
+    elif(token.tokenString == "inout"):
+        token = lexical_analyze()
+        arg = Argument("REF","int")
         x.setArgument(arg)
-        name=token.tokenString
-        if(token.tokenType!="keyword"):   
-            print("ERROR : Το πρόγραμμα περίμενε 'keyword/ονομα μεταβλητής' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        name = token.tokenString
+        if(token.tokenType != "keyword"):   
+            print("Error: The program waited 'keyword/variable name' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
-        token=lexical_analyze()
+        token = lexical_analyze()
         return (name,"REF")
     else:
-        print("ERROR : Το πρόγραμμα περίμενε 'in' or 'inout' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited 'in' or 'inout' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit() 
-    
-    listofFuncPars[0]=x
+    listofFuncPars[0] = x
 
 def idtail(sub_prog_name):
     global token
     
-    if(token.tokenString=="("):
-        token=lexical_analyze()
-        parameters=actualparlist(sub_prog_name)    #
-        if(token.tokenString==")"):
-            token=lexical_analyze()
+    if(token.tokenString == "("):
+        token = lexical_analyze()
+        parameters = actualparlist(sub_prog_name)    #
+        if(token.tokenString == ")"):
+            token = lexical_analyze()
             return(True, parameters)       
         else:
-            print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited ')' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
     return(False, None)     
 
         										   
 def declarations():
     global token
-    l=token.lineNo
-    if(token.tokenString=="declare"):
+    l = token.lineNo
+    if(token.tokenString == "declare"):
 
-        token=lexical_analyze()
+        token = lexical_analyze()
         varlist()	
-        if(token.tokenString!=";" ):		
-            print("ERROR : Το πρόγραμμα περίμενε ';' or ',' στη γραμμή:",l,"\nΒρέθηκε ",token.tokenString)
+        if(token.tokenString != ";" ):		
+            print("Error: The program waited ';' or ',' in line:",l,"\nFound ",token.tokenString)
             sys.exit()
-        token=lexical_analyze()
-        if(token.tokenString!=""):
-            if(token.tokenString=="declare"):
+        token = lexical_analyze()
+        if(token.tokenString != ""):
+            if(token.tokenString == "declare"):
                 declarations()
 	#############################			
    # global token
@@ -564,7 +543,7 @@ def declarations():
         #    if(token.tokenString==";"):
            #     token=lexical_analyze()
           #  else:
-            #    print("ERROR : Το πρόγραμμα περίμενε ';' or ',' στη γραμμή:",l,"\nΒρέθηκε ",token.tokenString)
+            #    print("ERROR : Το πρόγραμμα περίμενε ';' or ',' in line:",l,"\nΒρέθηκε ",token.tokenString)
              #   sys.exit()
            # if(token.tokenString=="declare"):
             #    continue;
@@ -572,110 +551,104 @@ def declarations():
               #  break;
         
   #  else:
-   #     print("ERROR : Το πρόγραμμα περίμενε 'declare'  στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+   #     print("ERROR : Το πρόγραμμα περίμενε 'declare'  in line:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
     #    sys.exit()
 	########################		
 def varlist():
     global token,list_of_variables 
     global currentScope,scopeList
 
-    count=token.lineNo
-    if(token.tokenString!=""):
+    count = token.lineNo
+    if(token.tokenString != ""):
         serSerTemp = Entity('', '', 0) #########
         serSerTemp = searchScope(token.tokenString) #######
-        if(token.tokenType=="keyword" and "Fail"==serSerTemp.name):  ###
-            list_of_variables.append(token.tokenString);     ###
+        if(token.tokenType == "keyword" and "Fail" == serSerTemp.name):  ###
             
-            scope=scopeList[currentScope]
-            totalscope=scope.getTotalOffset()
-            ent=Entity(token.tokenString,"var",(totalscope+4))
-
-
+            list_of_variables.append(token.tokenString);     ### 
+            scope = scopeList[currentScope]
+            totalscope = scope.getTotalOffset()
+            ent = Entity(token.tokenString,"var",(totalscope+4))
             scope.addentity(ent)
-            scopeList[currentScope] = scope
-
+            scopeList[currentScope] = scope            
+            token = lexical_analyze()
             
-            token=lexical_analyze()
-            if(token.tokenString==","):
-                token=lexical_analyze()
+            if(token.tokenString == ","):
+                token = lexical_analyze()
                 varlist()
         else:
-            print("ERROR : Το πρόγραμμα περίμενε 'keyword/ονομα μεταβλητής' ή υπαρχει το όνομα μεταβλητής ήδη δηλωμένο στη γραμμή:",count,"\nΒρέθηκε ",token.tokenString) ######
+            print("Error: The program waited 'keyword/name variable' or there exists a variable in line:",count,"\nFound ",token.tokenString) ######
             sys.exit()			
-			
 
 def statements():
     global token
 
-    if(token.tokenString=="{"):
-        token=lexical_analyze()
-        l=token.lineNo
+    if(token.tokenString == "{"):
+        token = lexical_analyze()
+        l = token.lineNo
         statement()
 		
-        if(token.tokenString==";"):
+        if(token.tokenString == ";"):
             while(1):
-                token=lexical_analyze()
-                k=token.lineNo
+                token = lexical_analyze()
+                k = token.lineNo
                 statement()
-                if(token.tokenString==";"):
-                    continue;
+                if(token.tokenString == ";"):
+                    continue
                 else:
-                    break;	
+                    break
         else:
-            print("ERROR : Το πρόγραμμα περίμενε ';' ή υπάρχει προβλημα με τα '{ }' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited ';' or there is a problem with '{ }' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()	
         if (token.tokenString=="}"):
             token=lexical_analyze()		
         else:
-            print("ERROR : Το πρόγραμμα περίμενε '}' or ';' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited '}' or ';' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
     else:
         statement()
-        if(token.tokenString==";"):
-            token=lexical_analyze()
+        if(token.tokenString == ";"):
+            token = lexical_analyze()
         else:
-            print("ERROR : Το πρόγραμμα περίμενε ';' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited ';' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
         #print("ERROR : Το πρόγραμμα περίμενε '{' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
         #sys.exit()
 					
 
 def statement():
-    global token,foundreturn
-    if(token.tokenType=="keyword"):
-    
-        name_variable=token.tokenString
-        token=lexical_analyze()
+    global token, foundreturn
+
+    if(token.tokenType == "keyword"):
+        name_variable = token.tokenString
+        token = lexical_analyze()
         assignStat(name_variable)
-    elif (token.tokenString=="if"):
-        token=lexical_analyze()
+    elif (token.tokenString == "if"):
+        token = lexical_analyze()
         ifStat()
-    elif (token.tokenString=="while"):
-        token=lexical_analyze()
-		
+    elif (token.tokenString == "while"):
+        token = lexical_analyze()
         whileStat()
-    elif (token.tokenString=="switchcase"):
-        token=lexical_analyze()
+    elif (token.tokenString == "switchcase"):
+        token = lexical_analyze()
         switchcaseStat()
-    elif (token.tokenString=="forcase"):
-        token=lexical_analyze()
+    elif (token.tokenString == "forcase"):
+        token = lexical_analyze()
         forcaseStat()
-    elif (token.tokenString=="incase"):
-        token=lexical_analyze()
+    elif (token.tokenString == "incase"):
+        token = lexical_analyze()
         incaseStat()
-    elif(token.tokenString=="call"):
-        token=lexical_analyze()	
+    elif(token.tokenString == "call"):
+        token = lexical_analyze()	
         callStat()
-    elif(token.tokenString=="return"):
-        token=lexical_analyze()
-        foundreturn=True
-        
+    elif(token.tokenString == "return"):
+        token = lexical_analyze()
+        foundreturn = True
         returnStat()
-    elif (token.tokenString=="input"):
-        token=lexical_analyze()
+    elif (token.tokenString == "input"):
+        token = lexical_analyze()
         inputStat()
-    elif(token.tokenString=="print"):
-        token=lexical_analyze()
+    elif(token.tokenString == "print"):
+        token = lexical_analyze()
         printStat()
     else:
         pass			
@@ -683,42 +656,36 @@ def statement():
 def assignStat(name_variable):
     global token
     
-    
-   
-    
     tempVar = searchScope(name_variable)
-    if tempVar.name=='Fail':
-        
-        print("Error: Βρέθηκε μεταβλητη",name_variable," που δεν εχει οριστεί στη γραμμή",token.lineNo)
+    if tempVar.name == 'Fail':
+        print("Error: Found a variable with the name ",name_variable," which was not declared in line ",token.lineNo)
         sys.exit()
-    if(token.tokenString==":="):
-        token=lexical_analyze()
-        
-        name=expression()
-        
+    if(token.tokenString == ":="):
+        token = lexical_analyze()
+        name = expression()
         genquad(":=",name,"_",name_variable)
     else:	
-        print("ERROR : Το πρόγραμμα περίμενε ':=' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited ':=' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
 		
 def whileStat():
     global token
     Bquad = nextquad()
-    if(token.tokenString=="("):
-        token=lexical_analyze()
-        l=token.lineNo
+    if(token.tokenString == "("):
+        token = lexical_analyze()
+        l = token.lineNo
         B_true, B_false = condition()
-        if(token.tokenString==")"):
+        if(token.tokenString == ")"):
             backpatch(B_true,nextquad())
-            token=lexical_analyze()
+            token = lexical_analyze()
             statements()
             genquad("jump","_","_",str(Bquad))
             backpatch(B_false,nextquad())
         else:
-            print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",l,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited ')' in line:",l,"\nFound ",token.tokenString)
             sys.exit()
     else:
-        print("ERROR : Το πρόγραμμα περίμενε '(' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited '(' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()	
         
 def condition():
@@ -727,15 +694,13 @@ def condition():
     B_true = Q1_true
     B_false = Q1_false
     
-    while(token.tokenString=="or"):
+    while(token.tokenString == "or"):
         backpatch(B_false,nextquad())
-        token=lexical_analyze()
+        token = lexical_analyze()
         Q2_true, Q2_false = boolterm()
         B_true = mergelist(B_true,Q2_true)
         B_false = Q2_false
     return B_true, B_false
-
-
 
 def boolterm():
     global token
@@ -743,50 +708,47 @@ def boolterm():
     Q_true = R1_true
     Q_false = R1_false
     
-    while(token.tokenString=="and"):
+    while(token.tokenString == "and"):
         backpatch(Q_true,nextquad())
-        token=lexical_analyze()
+        token = lexical_analyze()
         R2_true, R2_false = boolfactor()
         Q_false = mergelist(Q_false,R2_false)
         Q_true = R2_true
     return Q_true, Q_false
 
-
-
 def boolfactor():
     global token
-    if(token.tokenString=="not"):
-        token=lexical_analyze()
-        if(token.tokenString=="["):
-            token=lexical_analyze()
+    if(token.tokenString == "not"):
+        token = lexical_analyze()
+        if(token.tokenString == "["):
+            token = lexical_analyze()
             B_true, B_false = condition()
-            if(token.tokenString=="]"):
+            if(token.tokenString == "]"):
                 R_true = B_false
                 R_false = B_true
-                token=lexical_analyze()
+                token = lexical_analyze()
             else:
-                print("ERROR : Το πρόγραμμα περίμενε ']' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+                print("Error: The program waited ']' in line:",token.lineNo,"\nFound ",token.tokenString)
                 sys.exit()
         else:
-            print("ERROR : Το πρόγραμμα περίμενε '[' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited '[' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
     
 		
-    elif(token.tokenString=="["):
-        token=lexical_analyze()	
+    elif(token.tokenString == "["):
+        token = lexical_analyze()	
         B_true, B_false = condition()
-        if(token.tokenString=="]"):
+        if(token.tokenString == "]"):
             R_true = B_true
             R_false = B_false
-            token=lexical_analyze()
+            token = lexical_analyze()
         else:
-            print("ERROR : Το πρόγραμμα περίμενε ']' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited ']' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()	
     else:
         exp1 = expression()
         relop = REL_OP()
         exp2 = expression()
-
         R_true = makelist(nextquad())
         genquad(relop,exp1,exp2,"_")
         R_false = makelist(nextquad())
@@ -795,136 +757,111 @@ def boolfactor():
 	
 def expression():
     global token
-    global scopeList,currentScope,numofTMP  ###############
+    global scopeList,currentScope, numofTMP  ###############
     
-    if(token.tokenType=="keyword"):
+    if(token.tokenType == "keyword"):
         serSerTemp = searchScope(token.tokenString) ##
-        if token.tokenString    != serSerTemp.name:
-           
-            print("Error: Βρεθηκε μεταβλητη",token.tokenString , "που δεν έχει οριστεί στη γραμη:", token.lineNo)
+        if token.tokenString != serSerTemp.name:
+            print("Error: Found a variable with the name ",token.tokenString," which was not declared in line ",token.lineNo)
             sys.exit()
   
     optionalSing()
     
-    if(token.tokenType=="keyword"):
+    if(token.tokenType == "keyword"):
         serSerTemp = searchScope(token.tokenString) ##
-        if token.tokenString    != serSerTemp.name:
-           
-            print("Error: Βρεθηκε μεταβλητη",token.tokenString , "που δεν έχει οριστεί στη γραμη:", token.lineNo)
+        if token.tokenString != serSerTemp.name:
+            print("Error: Found a variable with the name ",token.tokenString," which was not declared in line ",token.lineNo)
             sys.exit()
-    num1=term()
-  
-    scope=scopeList[currentScope] ##
-    while(token.tokenString=="+" or token.tokenString=="-"):
-        op_sing=token.tokenString
+    num1 = term()
+    scope = scopeList[currentScope] ##
+    while(token.tokenString == "+" or token.tokenString == "-"):
+        op_sing = token.tokenString
         ADD_OP()
-        if(token.tokenType=="keyword"):
+        if(token.tokenType == "keyword"):
             serSerTemp = Entity('', '', 0)
             serSerTemp = searchScope(token.tokenString)
             if token.tokenString != serSerTemp.name:
                 print("Variable", token.tokenString,"not declared in line ",token.lineNo)
                 sys.exit()
-        num2=term()
+        num2 = term()
         if(token.tokenType=="keyword"):
             serSerTemp = searchScope(num2)
-            if num2 != serSerTemp.name:
-               
-                print("Error: Βρεθηκε μεταβλητη",num2 , "που δεν έχει οριστεί στη γραμη:", token.lineNo)
+            if num2 != serSerTemp.name:  
+                print("Error: Found a variable with the name ",num2," which was not declared in line ",token.lineNo)
                 sys.exit()
-        temp=newtemp()
-        
+        temp = newtemp()
         serSerTemp = searchScope(temp)
         if "Fail" == serSerTemp.name:
-
-            scoOff=scope.getTotalOffset()
-            ent=Entity(temp,"var",scoOff+4)
+            scoOff = scope.getTotalOffset()
+            ent = Entity(temp,"var",scoOff+4)
             scope.addentity(ent)
         genquad(op_sing,num1,num2,temp)
-        num1=temp
-        
-    scopeList[currentScope]=scope
+        num1 = temp
+    scopeList[currentScope] = scope
     serSerTemp = searchScope(num1)
     if num1 != serSerTemp.name:
-        
-        print("Error: Βρεθηκε μεταβλητη",num1 , "που δεν έχει οριστεί στη γραμη:", token.lineNo)
+        print("Error: Found a variable with the name ",num1," which was not declared in line ",token.lineNo)
         sys.exit()
-
-
-    numofTMP=0
-    return num1    
-		  
+    numofTMP = 0
+    return num1
 
 def optionalSing():
     global token
-    if(token.tokenString=="+" or token.tokenString=="-"):
-        token=lexical_analyze() 
+    if(token.tokenString == "+" or token.tokenString == "-"):
+        token = lexical_analyze() 
         
 
 def term():
     global token
     global numofTMP  ##
     
-    num1=factor()
-    
-    scope=scopeList[currentScope]
-    while(token.tokenString=="*" or token.tokenString=="/"): 
-       
-        op_sing=MUL_OP()
-        ##
-        
-        ##        
-        num2=factor()
-        ##
-        
-        #####
-        temp=newtemp()
+    num1 = factor()
+    scope = scopeList[currentScope]
+    while(token.tokenString == "*" or token.tokenString == "/"): 
+        op_sing = MUL_OP()        
+        num2 = factor()
+        temp = newtemp()
         serSerTemp = searchScope(temp)
         if "Fail" == serSerTemp.name:
-            scoOff=scope.getTotalOffset()
-            ent=Entity(temp,"var",scoOff+4)
+            scoOff = scope.getTotalOffset()
+            ent = Entity(temp,"var",scoOff+4)
             scope.addentity(ent)
         genquad(op_sing,num1,num2,temp)
-        num1=temp
-        
-    scopeList[currentScope]=scope    
+        num1 = temp
+    scopeList[currentScope] = scope    
     return num1    
 	
 def factor():
 
     global token
-    global scopeList,list_of_variables
-    scope=scopeList[currentScope]
-    if(token.tokenType=="number"):
-        num=INTEGER()
+    global scopeList, list_of_variables
+    scope = scopeList[currentScope]
+    if(token.tokenType == "number"):
+        num = INTEGER()
         return num
-    elif(token.tokenString=="("):
-        token=lexical_analyze()
-        num=expression()
-        if(token.tokenString!=")"):
-			
-            print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+    elif(token.tokenString == "("):
+        token = lexical_analyze()
+        num = expression()
+        if(token.tokenString != ")"):
+            print("Error: The program waited ')' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
-        token=lexical_analyze()
+        token = lexical_analyze()
         return num
-    elif(token.tokenType=="keyword"):
-        
-        variable=token.tokenString
-       
-        token=lexical_analyze()
-        
-        have_func,parameters=idtail(variable)  ###
+    elif(token.tokenType == "keyword"):  
+        variable = token.tokenString
+        token = lexical_analyze()
+        have_func,parameters = idtail(variable)  ###
         if (have_func):
-            func_name=variable
-           
-            idret=newtemp()
+            func_name = variable
+            idret = newtemp()
             ########
-            s=scopeList[0]
+            s = scopeList[0]
             serSerTemp = Entity('', '', 0)
             serSerTemp = searchScope(idret)
             if 	"Fail" == serSerTemp.name:
-                ent=Entity(idret,"var",s.getTotalOffset()+4)
+                ent = Entity(idret,"var",s.getTotalOffset()+4)
                 s.addentity(ent)
-                scopeList[0]=s
+                scopeList[0] = s
              ##############   
             for param in parameters:
                 genquad("par", param[0], param[1], "_")
@@ -934,84 +871,79 @@ def factor():
         else:
             return variable
     else:
-		
-        print("ERROR : Το πρόγραμμα περίμενε 'αριθμό' ή '(' ή 'ονομα μεταβλητης' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited 'number' or '(' or 'variable name' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
 
                    	
 def printStat():
     global token
-    if(token.tokenString=="("):
-        token=lexical_analyze()
+    if(token.tokenString == "("):
+        token = lexical_analyze()
         exp = expression()
         genquad("out",exp, "_","_")
-        if(token.tokenString==")"):
-            token=lexical_analyze()
+        if(token.tokenString == ")"):
+            token = lexical_analyze()
         else:
-            print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited ')' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
     else:			
-        print("ERROR : Το πρόγραμμα περίμενε '(' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited '(' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
             
 		
 def returnStat():
     global token
-    global variableforSeeReturnCheck,functionL,inFunction
-    if(token.tokenString=="("):
-        token=lexical_analyze()
+    global variableforSeeReturnCheck, functionL, inFunction
+    if(token.tokenString == "("):
+        token = lexical_analyze()
         exp = expression()
         genquad("retv",exp,"_","_")
-        
-        
-      
-        if(inFunction==False):
-            
-            print("Error: Βρεθηκε Retutn εκτός {} συνάρτησης στη γραμμη:", token.lineNo)
+
+        if(inFunction == False):
+            print("Error: Found return outside of {} of a function in line:", token.lineNo)
             sys.exit()
-        if(token.tokenString==")"):
-            token=lexical_analyze()
+        if(token.tokenString == ")"):
+            token = lexical_analyze()
         else:
-            print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited ')' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
     else:
-        print("ERROR : Το πρόγραμμα περίμενε '(' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited '(' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()     		    	
 
 def inputStat():
     global token
 
-    if(token.tokenString=="("):
-        token=lexical_analyze()
-        if(token.tokenType=="keyword"):
+    if(token.tokenString == "("):
+        token = lexical_analyze()
+        if(token.tokenType == "keyword"):
             idplace = token.tokenString
-            id_place=searchScope(idplace)
+            id_place = searchScope(idplace)
             if id_place.name!=idplace:
-               
-                print("Error: Προσπάθεια αρχικοποιησης μεταβλητής","'",idplace,"'", "που δεν ειναι ορισμένη στη γραμμή:",token.lineNo)
+                print("Error: Tried to declare a varible with name ","'",idplace,"'", "which was not declared in line:",token.lineNo)
                 sys.exit()
-            token=lexical_analyze()
+            token = lexical_analyze()
             genquad("inp",idplace,"_","_")
-            if(token.tokenString==")"):
-                token=lexical_analyze()
+            if(token.tokenString == ")"):
+                token = lexical_analyze()
             else:
-                print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+                print("Error: The program waited ')' in line :",token.lineNo,"\nFound ",token.tokenString)
                 sys.exit()	
         else:
-            print("ERROR : Το πρόγραμμα περίμενε 'όνομα μεταβλητής' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited 'variable name' in line :",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
     else:
-        print("ERROR : Το πρόγραμμα περίμενε '(' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited '(' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
 
 def REL_OP():
     global token
     l=token.lineNo
-    if(token.tokenString=="=" or token.tokenString=="<=" or token.tokenString==">=" or token.tokenString==">" or token.tokenString=="<" or token.tokenString=="<>"):
-        rel_op=token.tokenString
-        token=lexical_analyze()
+    if(token.tokenString == "=" or token.tokenString == "<=" or token.tokenString == ">=" or token.tokenString == ">" or token.tokenString == "<" or token.tokenString == "<>"):
+        rel_op = token.tokenString
+        token = lexical_analyze()
     else:	
-        print("ERROR : Το πρόγραμμα περίμενε 'εναν λογικό τελεστή = ,<=, >=, >, <, <>' στη γραμμή:",token.lineNo,"/nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited 'a logical operator = ,<=, >=, >, <, <>' in line:",token.lineNo,"/nFound ",token.tokenString)
         sys.exit()	    
     return rel_op
    
@@ -1019,88 +951,84 @@ def MUL_OP():
 
     global token
 	
-    if(token.tokenString=="*" or token.tokenString=="/"):
-        mul_op=token.tokenString
-        token=lexical_analyze()
-        
+    if(token.tokenString == "*" or token.tokenString == "/"):
+        mul_op = token.tokenString
+        token = lexical_analyze()
     else:	
-        print("ERROR : Το πρόγραμμα περίμενε '*' ή '/' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited '*' or '/' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()	
     return mul_op
 
 def ADD_OP():
     global token
-    if(token.tokenString=="+" or token.tokenString=="-"):
-        add_op=token.tokenString
-        token=lexical_analyze()
+    if(token.tokenString == "+" or token.tokenString == "-"):
+        add_op = token.tokenString
+        token = lexical_analyze()
     else:	
-        print("ERROR : Το πρόγραμμα περίμενε '+' ή '-' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited '+' or '-' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
     return add_op
 
 def ifStat():
     global token
-    if(token.tokenString=="("):
-        token=lexical_analyze()
+    if(token.tokenString == "("):
+        token = lexical_analyze()
+        b_true,b_false = condition()   ##
         
-        b_true,b_false=condition()   ##
-        
-        if(token.tokenString==")"):
-            token=lexical_analyze()
+        if(token.tokenString == ")"):
+            token = lexical_analyze()
             backpatch(b_true,nextquad())  ##
             statements()
-            if_list=makelist(nextquad())     ##
+            if_list = makelist(nextquad())     ##
             genquad("jump","_","_","_")   ##
             backpatch(b_false,nextquad()) ##
             elsepart()
             backpatch(if_list,nextquad())  ##
         else:
-            print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited ')' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()	
     else:
-
-        print("ERROR : Το πρόγραμμα περίμενε '(' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
-
+        print("Error: The program waited '(' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
 
 
 def elsepart():
     global token
-    if(token.tokenString=="else"):
-        token=lexical_analyze()
+    if(token.tokenString == "else"):
+        token = lexical_analyze()
         statements() 	
 
 def incaseStat():
     global token
-    w=newtemp()
-    p1Quad=nextquad()
+    w = newtemp()
+    p1Quad = nextquad()
     genquad(":=",1,"_",w)
     
-    if(token.tokenString=="case"):
+    if(token.tokenString == "case"):
         while(1):       
-            token=lexical_analyze()
-            if(token.tokenString=="("):
-                token=lexical_analyze()
-                cond_true,cond_false=condition()
-                if(token.tokenString==")"):
-                    token=lexical_analyze()
+            token = lexical_analyze()
+            if(token.tokenString == "("):
+                token = lexical_analyze()
+                cond_true,cond_false = condition()
+                if(token.tokenString == ")"):
+                    token = lexical_analyze()
                     backpatch(cond_true,nextquad())
                     genquad(":=",0,"_",w)
                     statements()
                     backpatch(cond_false,nextquad())
-                    if(token.tokenString=="case"):
-                        continue;
+                    if(token.tokenString == "case"):
+                        continue
                     else:
                         genquad("=",w,0,p1Quad)   
-                        break;
+                        break
                 else:	
-                    print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+                    print("Error: The program waited ')' in line:",token.lineNo,"\nFound ",token.tokenString)
                     sys.exit()
             else:
-                print("ERROR : Το πρόγραμμα περίμενε '(' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+                print("Error: The program waited '(' in line:",token.lineNo,"\nFound ",token.tokenString)
                 sys.exit()
     else:   
-        print("ERROR : Το πρόγραμμα περίμενε 'case' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited 'case' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()    
 
 
@@ -1108,30 +1036,29 @@ def incaseStat():
 def forcaseStat():
     global token
    
-    p1Quad=nextquad()
-    while(token.tokenString=="case"):
-        token=lexical_analyze()
-        if(token.tokenString=="("):
-            token=lexical_analyze()
-            cond_true,cond_false=condition()
-            if(token.tokenString==")"):
-                token=lexical_analyze()
+    p1Quad = nextquad()
+    while(token.tokenString == "case"):
+        token = lexical_analyze()
+        if(token.tokenString == "("):
+            token = lexical_analyze()
+            cond_true,cond_false = condition()
+            if(token.tokenString == ")"):
+                token = lexical_analyze()
                 backpatch(cond_true,nextquad())
                 statements()
-                
                 genquad("jump","_","_",p1Quad)
                 backpatch(cond_false,nextquad())
             else:		
-                print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+                print("Error: The program waited ')' in line:",token.lineNo,"\nFound ",token.tokenString)
                 sys.exit()	
         else:
-            print("ERROR : Το πρόγραμμα περίμενε '(' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited '(' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()					
-    if(token.tokenString=="default"):
-        token=lexical_analyze()
+    if(token.tokenString == "default"):
+        token = lexical_analyze()
         statements()
     else:	
-        print("ERROR : Το πρόγραμμα περίμενε 'case' ή 'default' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited 'case' or 'default' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
         #pass
 
@@ -1140,34 +1067,32 @@ def switchcaseStat():
 
     global token,l
     exitlist = emptylist()
-    while(token.tokenString=="case"):
-        token=lexical_analyze()
-        if(token.tokenString=="("):
-            token=lexical_analyze()
-            cond_true,cond_false=condition()
-            if(token.tokenString==")"):
-                token=lexical_analyze()
+    while(token.tokenString == "case"):
+        token = lexical_analyze()
+        if(token.tokenString == "("):
+            token = lexical_analyze()
+            cond_true,cond_false = condition()
+            if(token.tokenString == ")"):
+                token = lexical_analyze()
                 backpatch(cond_true,nextquad())
                 statements()
-                e=makelist(nextquad())
+                e = makelist(nextquad())
                 genquad("jump","_","_","_")
-                exitlist= mergelist(exitlist,e)  
-                
+                exitlist = mergelist(exitlist,e)  
                 backpatch(cond_false,nextquad())
-                
             else:			
-                print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+                print("Error: The program waited ')' in line:",token.lineNo,"\nFound ",token.tokenString)
                 sys.exit()	
         else:
-            print("ERROR : Το πρόγραμμα περίμενε '(' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited '(' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()
     
     if(token.tokenString=="default"):
-        token=lexical_analyze()
+        token = lexical_analyze()
         statements()
         backpatch(exitlist,nextquad())
     else:		
-        print("ERROR : Το πρόγραμμα περίμενε 'case' ή 'default' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited 'case' or 'default' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
         pass
 	
@@ -1176,51 +1101,50 @@ def callStat():
 
     global token,procedureL
     global variableforSeeReturnCheck ###
-    if(token.tokenType=="keyword"):
-        call_name=token.tokenString
-       
+    if(token.tokenType == "keyword"):
+        call_name = token.tokenString
         if(call_name not in procedureL):
-            print("Error")
+            print("Error: There does not exist a procedure with a name",call_name,"in line:",token.lineNo)
             sys.exit()
-        token=lexical_analyze()
-        if(token.tokenString=="("):
-            token=lexical_analyze()
-            parameters=actualparlist(call_name) 
-            if(token.tokenString==")"):
+        token = lexical_analyze()
+        if(token.tokenString == "("):
+            token = lexical_analyze()
+            parameters = actualparlist(call_name) 
+            if(token.tokenString == ")"):
                 w = newtemp()
-                s=scopeList[0]
+                s = scopeList[0]
                 serSerTemp = Entity('', '', 0)
                 serSerTemp = searchScope(w)
-                if 	"Fail" == serSerTemp.name:##pi8anwn la8os apo ena tab
-                    ent=Entity(w,"var",s.getTotalOffset()+4)
+                if "Fail" == serSerTemp.name:
+                    ent = Entity(w,"var",s.getTotalOffset()+4)
                     s.addentity(ent)
-                    scopeList[0]=s
-                token=lexical_analyze()
+                    scopeList[0] = s
+                token = lexical_analyze()
                 for param in parameters:
                     genquad("par", param[0], param[1], "_")
                 genquad("call",call_name,"_","_")
             else:
-                print("ERROR : Το πρόγραμμα περίμενε ')' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+                print("Error: The program waited ')' in line:",token.lineNo,"\nFound ",token.tokenString)
                 sys.exit()
         else:
-            print("ERROR : Το πρόγραμμα περίμενε '(' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+            print("Error: The program waited '(' in line:",token.lineNo,"\nFound ",token.tokenString)
             sys.exit()    
     else:
-        print("ERROR : Το πρόγραμμα περίμενε 'όνομα μεταβλητής 'στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited 'variable name' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
             				
 def INTEGER():
     global token
-    if(token.tokenType=="number"):
-        num=token.tokenString
-        token=lexical_analyze()
+    if(token.tokenType == "number"):
+        num = token.tokenString
+        token = lexical_analyze()
         return num
 		
     else:
-        print("ERROR : Το πρόγραμμα περίμενε 'εναν ακεραιο αριθμο' στη γραμμή:",token.lineNo,"\nΒρέθηκε ",token.tokenString)
+        print("Error: The program waited an 'Integer' in line:",token.lineNo,"\nFound ",token.tokenString)
         sys.exit()
 
-##### INTERMEDIETE CODE ########### 
+####################### INTERMEDIETE CODE ####################### 
 
 
 class Quad:
@@ -1248,8 +1172,7 @@ def genquad(op, x, y, z):
     global quadList, counter_next_quad
    
     counter_next_quad = nextquad()
-    
-    quad=Quad(counter_next_quad,op,x,y,z)
+    quad = Quad(counter_next_quad,op,x,y,z)
     quadList.append(quad)
     
     
@@ -1281,8 +1204,6 @@ def backpatch(lst,z):
     for quad in quadList:
         if  quad.ID in lst:
             quad.z=str(z)
-  
-
 
 def find_variable():
 
@@ -1292,10 +1213,6 @@ def find_variable():
             if ((not (q.z in list_of_variables )) and (str(q.z) != "_") and (not str(q.z).isdigit())):
                 list_of_variables.append(str(q.z))
 
-    
-
-
-  
 def intFileGen():
     global intFile, quadList
     
