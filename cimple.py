@@ -1,4 +1,8 @@
+## Ονοματεπώνυμο : Λάμπρος Βλαχόπουλος , ΑΜ : 2948 , username : cse52948 
+## Ονοματεπώνυμο : Γιώργος Κρομμύδας   , ΑΜ : 3260 , username : cse63260  
+
 import sys 
+
 global list
 
 list=['program','declare','if','else','while','switchcase','forcase',
@@ -35,9 +39,9 @@ class Token:
  
     def __init__(self, tokenType, tokenString, lineNo):
     
-        self.tokenType=tokenType
-        self.tokenString=tokenString
-        self.lineNo=lineNo
+        self.tokenType = tokenType
+        self.tokenString = tokenString
+        self.lineNo = lineNo
 
 counter_for_lines = 1
 
@@ -1152,17 +1156,17 @@ class Quad:
         self.z = str(z)
 
     def myfunc(self):
-        print( self.ID,":"+self.op+","+self.x +","+self.y+","+self.z)
+        print(self.ID,":" + self.op + "," + self.x + "," + self.y + "," + self.z)
         
     def metatroph(self):
         
-        return str(self.ID) +" : "+self.op+" , "+self.x +" , "+self.y+" , "+self.z
+        return str(self.ID) + ": " + self.op + " , " + self.x + " , " + self.y + " , " + self.z
 
 
 def nextquad():
     global counter_next_quad
     
-    return counter_next_quad+1
+    return counter_next_quad + 1
 
 def genquad(op, x, y, z):
     global quadList, counter_next_quad
@@ -1181,17 +1185,17 @@ def newtemp():
     return "T_" + str(T_i)
 
 def emptylist():
-    mylist=[]
+    mylist = []
     return mylist
     
 def makelist(x):
-   lst=[]
+   lst = []
    lst.append(x)
    return lst
 
 def mergelist(list1, list2):
 
-    mergedList = list1+ list2
+    mergedList = list1 + list2
     return mergedList
 
 def backpatch(lst,z):
@@ -1199,7 +1203,7 @@ def backpatch(lst,z):
     
     for quad in quadList:
         if  quad.ID in lst:
-            quad.z=str(z)
+            quad.z = str(z)
 
 def find_variable():
 
@@ -1275,9 +1279,9 @@ def cFileGen():
 
 class Entity:
 
-    def __init__(self,name,typeofEntity,offset):
-        self.name=str(name)
-        self.typeofEntity=str(typeofEntity)
+    def __init__(self, name, typeofEntity, offset):
+        self.name = str(name)
+        self.typeofEntity = str(typeofEntity)
         self.offset = offset
         self.startQuad = 0
         self.parMode = ""
@@ -1286,24 +1290,24 @@ class Entity:
         self.varType = "int"
         self.framelength = 0
     def setframelength(self,fl):
-        self.framelength=fl
+        self.framelength = fl
     '''def setVarType(self,vType):
         self.varType = vType'''
 
     '''def setEntity(self,nextE):
         self.nextEntity=nextE'''
 
-    def setParMode(self,par):
-        self.parMode=par
+    def setParMode(self, par):
+        self.parMode = par
 
-    def setArgument(self,nextA):
+    def setArgument(self, nextA):
         self.listOFArguments.append(nextA)
 
-    def setstartQuad(self,starQ):
-        self.startQuad=starQ
+    def setstartQuad(self, starQ):
+        self.startQuad = starQ
 
-    def changeoffset(self,newoffset):
-        self.offset=newoffset
+    def changeoffset(self, newoffset):
+        self.offset = newoffset
 
     def returnoffset(self):
         return self.offset
@@ -1312,59 +1316,58 @@ class Entity:
         return self.listOFArguments
 
     def printer(self):
-        print('Name:',self.name + ":" + "Offset " +str(self.offset) + " Type of entity "+self.typeofEntity+ " Par "+self.parMode)
-        x=str("Name: ")+str(self.name) + str(" : ") + str(" Offset ") +str(self.offset) + str(" Type of entity ")+str(self.typeofEntity)+ " Par "+str(self.parMode)
+        print('Name:',self.name + ":" + "Offset " + str(self.offset) + " Type of entity "+ self.typeofEntity + " Par " + self.parMode)
+        x = str("Name: ") + str(self.name) + str(" : ") + str(" Offset ") + str(self.offset) + str(" Type of entity ") + str(self.typeofEntity) + " Par " + str(self.parMode)
         if self.typeofEntity == "function" or self.typeofEntity == "procedure":
             print("NextQuad",self.startQuad,"Framelength",self.framelength)
-            x=str(x)+str("\nNextQuad ")+str(self.startQuad)+" Framelength "+str(self.framelength)
+            x = str(x) + str("\nNextQuad ") + str(self.startQuad) +" Framelength " + str(self.framelength)
         return x    
 
 
 class Scope:
-    def __init__(self,nestingLevel):
-        self.nestingLevel=nestingLevel
+    def __init__(self, nestingLevel):
+        self.nestingLevel = nestingLevel
         self.listofEntitys = []
         self.enclosingScope = False
 
     '''def setScopeClosed(self):
         self.enclosingScope = True'''
 
-    def addentity(self,entitytoadd):
+    def addentity(self, entitytoadd):
         self.listofEntitys.append(entitytoadd)
 
     def printScope(self):
         print(self.nestingLevel)
-        return(str(self.nestingLevel))
+        return (str(self.nestingLevel))
 
-    def setListOfEntitys(self,entLi):
-        self.listofEntitys=entLi
+    def setListOfEntitys(self, entLi):
+        self.listofEntitys = entLi
 
     def getTotalOffset(self):
-        if len(self.listofEntitys)==0:
+        if len(self.listofEntitys) == 0:
             return 0
         else:
-            ent=self.listofEntitys[-1]
-            entsoff=ent.returnoffset()
+            ent = self.listofEntitys[-1]
+            entsoff = ent.returnoffset()
             return entsoff
 
     def returnListOfEntitys(self):
         return self.listofEntitys
 
-    def varLocal(self,Varname):
+    def varLocal(self, Varname):
         for x in self.listofEntitys:
             if x.name == Varname.strip():
-                
                 return 1
         return 0
 
 class Argument:
     global argumentuniqeID
-    argumentuniqeID=argumentuniqeID+1
-    def __init__(self,parMode,typeOfArg):
-        self.parMode=parMode
+    argumentuniqeID = argumentuniqeID+1
+    def __init__(self, parMode, typeOfArg):
+        self.parMode = parMode
         self.typeofArgument = typeOfArg
-        self.argumentID=argumentuniqeID
-        self.nextArgument =0
+        self.argumentID = argumentuniqeID
+        self.nextArgument = 0
 
     '''def compare(self,arg2):
         result=True
@@ -1373,114 +1376,112 @@ class Argument:
         return result'''
     def printerArg(self):
         print(str(self.parMode)+"   ")
-        return(str(self.parMode)+"   ")
+        return (str(self.parMode)+"   ")
 
     '''def tonextArgument(self,nextArg):
         self.nextArgument=nextArg'''
 
 
 def searchScope(searchElement):
-    vforreturn =Entity("Fail",'int',0)
+    vforreturn = Entity("Fail", 'int', 0)
     nameTostrip = ''
     for scope in scopeList:
-        entititiesList=scope.returnListOfEntitys()
+        entititiesList = scope.returnListOfEntitys()
         for enti in entititiesList:
-            if enti.name==searchElement:
+            if enti.name == searchElement:
                 
-                vforreturn=enti
+                vforreturn = enti
                 nameTostrip = vforreturn.name
                 nameTostrip.strip()
                 vforreturn.name = nameTostrip
             elif searchElement.isdigit():
-                vforreturn.name= searchElement
+                vforreturn.name = searchElement
     ###alages gia thn epistrofh san antikimeno enity kai alages ekei pou xrisimopiousame thn synarthsh
-
-
     return vforreturn
  
-########### SEMATIC ANALYSIS ############
+######################## SEMATIC ANALYSIS ##################################
 
 def Symasiologikh_analysh():
-    global List_after_delete_scope, listofFuncPars,functionL 
-    ##elexoi an otan kaloume mia synarthsh an einai idoi oi parametoi kai me thn idia seira
-    #Ελεγχοι για το όταν καλούμε ένα subprogramm αν καλείτε με τους σωστους παραμετρους και με την ίδια σειρα
+    
+    global List_after_delete_scope, listofFuncPars, functionL 
+    # Check if a subprogram is called with the correct set of parameters
     for x in listofFuncPars:
         for y in List_after_delete_scope:
-            search_froniter=y.returnListOfEntitys()
+            search_froniter = y.returnListOfEntitys()
            
             for z in search_froniter:
                 
-                if x.name==z.name:
-                    if len(z.returnArgumentList())==len(x.returnArgumentList()):
-                        i=0
-                        list_arg=z.returnArgumentList()
-                        list_arg2=x.returnArgumentList()
-                        while(i<len(z.returnArgumentList())):
-                            arg=list_arg[i]
-                            arg2=list_arg2[i]
+                if x.name == z.name:
+                    if len(z.returnArgumentList()) == len(x.returnArgumentList()):
+                        i = 0
+                        list_arg = z.returnArgumentList()
+                        list_arg2 = x.returnArgumentList()
+                        while(i < len(z.returnArgumentList())):
+                            arg = list_arg[i]
+                            arg2 = list_arg2[i]
                             if arg.parMode != arg2.parMode :
                                 print("Detected a wrong parameter in funtion ",x.name)
                                 print("Error: Found a wrong parameter in function or procedure with name:",x.name)
                                 sys.exit()
-                            i=i+1
+                            i = i + 1
                     else:
                         if(x.name in functionL):
-                            continue;
+                            continue
                         else:    
                             print("Detected a wrong parameter in funtion ",x.name,"htht ")
                             print("Error: Found a wrong parameter in function or procedure with name:",x.name)
                             sys.exit()
-    ##kanei update ola ta framelength
+    # Updates all the framelenths of subprograms
     for x in List_after_delete_scope:
-        xlist=x.returnListOfEntitys()
+        xlist = x.returnListOfEntitys()
         entiFunc = xlist[0]
-        lastoffset= xlist[-1]
+        lastoffset = xlist[-1]
         entiFunc.setframelength(x.getTotalOffset())
-        xlist[0]=entiFunc
+        xlist[0] = entiFunc
         for y in List_after_delete_scope:
-            ylistofentity=y.returnListOfEntitys()
+            ylistofentity = y.returnListOfEntitys()
             for yl in ylistofentity:
-                if entiFunc.name==yl.name:
+                if entiFunc.name == yl.name:
                     yl.setframelength(x.getTotalOffset())
 
+##################### SYMBOL TABLE #######################
 
-########### SYMBOL TABLE #############
 def printSymbolTable():## kanei print ta scopes
     
-    global List_after_delete_scope,SymbolTableFile
-    
+    global List_after_delete_scope, SymbolTableFile
     
     for xo in List_after_delete_scope:
         print("\n-------------------------------------------------------------------------")
         SymbolTableFile.write("\n---------------------------------------------------------\n")
-        SymbolTableFile.write(xo.printScope()+"\n")
+        SymbolTableFile.write(xo.printScope() + "\n")
         print("\n=========================================================================\n")
-        
         SymbolTableFile.write("\n=========================================================================\n")
-        ls=xo.returnListOfEntitys()
+        ls = xo.returnListOfEntitys()
         for l in ls:
-            SymbolTableFile.write(str(l.printer())+"\n")
-            a=l.returnArgumentList()
+            SymbolTableFile.write(str(l.printer()) + "\n")
+            a = l.returnArgumentList()
             for arg in a:
-                SymbolTableFile.write(arg.printerArg()+"\n")
+                SymbolTableFile.write(arg.printerArg() +"\n")
         print("---------------------------------------------\n")
         SymbolTableFile.write("---------------------------------------------------------\n")
 
-######### FINAL CODE ################
+###################### FINAL CODE ############################
+
 def gnlvcode(v):
+    
     global nesting
+    
     for x in scopeList:
-        scope=x
+        scope = x
         listforentitys = scope.returnListOfEntitys()
         for ent in listforentitys:
             if ent.name == v :
                 v = ent
                 i = scope.nestingLevel
-
-    x=nesting
+    x = nesting
     gnvlcodeReturn = 'lw $t0,-4($sp)\n'
     while 1:
-        x = x+1
+        x = x + 1
         if x >= i:
             break
         gnvlcodeReturn = gnvlcodeReturn + '\t\tlw $t0, -4($t0)\n'
@@ -1488,70 +1489,59 @@ def gnlvcode(v):
     gnvlcodeReturn = gnvlcodeReturn + '\t\taddi $t0,$t0,-' + str(v.offset) + '\n'
     return gnvlcodeReturn
 
-def loadvar(quadvar,tempregister):
+def loadvar(quadvar, tempregister):
+    
     global nesting
-    i =-1
-   
+    
+    i = -1
     for scope in scopeList:
         listforentitys = scope.returnListOfEntitys()
-        m=listforentitys[0]
+        m = listforentitys[0]
         for ent in listforentitys:
-            if ent.name == quadvar and i==-1:
+            if ent.name == quadvar and i == -1:
                 v = ent
                 i = scope.nestingLevel
-               
-               
-
      
     if quadvar.isdigit():
-        loadvarReturn = 'li $t'+str(tempregister)+','+str(quadvar)+'\n'
+        loadvarReturn = 'li $t'+str(tempregister) + ',' + str(quadvar) + '\n'
     elif i == 1 :
-        loadvarReturn = 'lw $t'+str(tempregister)+',-' +str(v.offset)+'($s0)\n'
-        
-    elif (v.parMode == '' and i == nesting) or( v.parMode == 'in' and i == nesting) or (quadvar[0:2] == "T_"):
-        loadvarReturn = 'lw $t'+str(tempregister)+',-' + str(v.offset)+'($sp)\n'
-    elif  v.parMode == 'inout' and i==nesting :
+        loadvarReturn = 'lw $t' + str(tempregister) + ',-' + str(v.offset) + '($s0)\n'
+    elif (v.parMode == '' and i == nesting) or (v.parMode == 'in' and i == nesting) or (quadvar[0:2] == "T_"):
+        loadvarReturn = 'lw $t' + str(tempregister) + ',-' + str(v.offset) + '($sp)\n'
+    elif  v.parMode == 'inout' and i == nesting :
         loadvarReturn = 'lw $t0,-'+str(v.offset)+'($sp)\n\t\t' + 'lw $t' + str(tempregister)+',($t0)\n'
     elif v.parMode == '' and i == nesting or v.parMode == 'in' or i < nesting:
-        loadvarReturn = gnlvcode(v.name) + '\t\tlw $t'+ str(tempregister)+',($t0)\n'
+        loadvarReturn = gnlvcode(v.name) + '\t\tlw $t' + str(tempregister) + ',($t0)\n'
     elif v.parMode == 'inout' and i < nesting:
-        loadvarReturn = gnlvcode(quadvar) + '\t\tlw $t0,($t0)\n' + '\t\tlw $t'+ str(tempregister)+ ',($t0)\n'
+        loadvarReturn = gnlvcode(quadvar) + '\t\tlw $t0,($t0)\n' + '\t\tlw $t' + str(tempregister) + ',($t0)\n'
     else:
         loadvarReturn = 'Error in loadvar\n'
         print(loadvarReturn)
-    return '\t\t'+loadvarReturn
-       
+    return '\t\t' + loadvarReturn
 
-def storevar(r,v):
+def storevar(r, v):
+    
     global nesting
-    i=-1
-   
+    
+    i = -1
     for scope in scopeList:
         listforentitys = scope.returnListOfEntitys()
         for ent in listforentitys:
             if ent.name == v and i == -1:
                 v = ent
-                i = scope.nestingLevel
-                
-                
+                i = scope.nestingLevel 
                 break
     
-   
     scope = scopeList[0]
-    
     localVar = scope.varLocal(v.name)
     
- 
     if i == 1:
         storevarReturn = 'sw $t' + str(r) + ',-' + str(v.offset) + '($s0)\n'
     elif (localVar == 1) and not(v.parMode == 'inout' and i == nesting) or (v.name[0:2] == "T_") or (v.parMode == 'in' and i == nesting):
-        
         storevarReturn = 'sw $t' + str(r) + ',-' + str(v.offset) + '($sp)\n'
     elif v.parMode == 'inout' and i == nesting:
-        
-        storevarReturn = 'lw $t0, -' +str(v.offset) + '($sp)\n\t\t' + 'sw $t'+str(r)+',($t0)\n'
+        storevarReturn = 'lw $t0, -' + str(v.offset) + '($sp)\n\t\t' + 'sw $t'+ str(r) + ',($t0)\n'
     elif v.parMode == '' and localVar == 1 or v.parMode == 'in' or i < nesting:
-        
         storevarReturn = gnlvcode(v.name) + '\t\tsw $t' +str(r) +'($t0)'
     elif v.parMode == 'inout' and i < nesting:
         storevarReturn = gnlvcode(v.name) + '\t\tlw $t0,($t0)' + '\n\t\tsw $t' + str(r) + '($t0)\n'
@@ -1559,41 +1549,37 @@ def storevar(r,v):
         torevarReturn = 'Error in storevar'
             
     return '\t\t' + storevarReturn
-    
-    
-   
-   
+
 def FinalCode_Transformer(quad):
-    global currentScope,nesting,frameLengthValu,scopeList,main_program_name,List_after_delete_scope
-    global counter_fake #counter_next_quad ## counter gia parametrous L_
+    global currentScope, nesting, frameLengthValue, scopeList, main_program_name, List_after_delete_scope
+    global counter_fake # counter for parameters into scope 
+    
     flag = True
     
     if quad.op == 'jump':
         ret = '\t\tj L_' + str(quad.z)
     elif quad.op == '+':
-        
-        ret = (loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tadd ' + '$t' + str(1) + ',$t' + str(1) + ',$t' + str(2) + '\n' +storevar(1,quad.z)) #flag_num
+        ret = (loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tadd ' + '$t' + str(1) + ',$t' + str(1) + ',$t' + str(2) + '\n' + storevar(1, quad.z)) # flag_num
     elif quad.op == '-':
-        ret = (loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tsub ' + '$t' + str(1) + ',$t' + str(1) + ',$t' + str(2) + '\n' +storevar(1,quad.z))
+        ret = (loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tsub ' + '$t' + str(1) + ',$t' + str(1) + ',$t' + str(2) + '\n' + storevar(1, quad.z))
     elif quad.op == '*':
-        ret = (loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tmul ' + '$t' + str(1) + ',$t' + str(1) + ',$t' + str(2) + '\n' +storevar(1,quad.z))
+        ret = (loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tmul ' + '$t' + str(1) + ',$t' + str(1) + ',$t' + str(2) + '\n' + storevar(1, quad.z))
     elif quad.op == '/':
-        ret = (loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tdiv ' + '$t' + str(1) + ',$t' + str(1) + ',$t' + str(2) + '\n' +storevar(1,quad.z))
+        ret = (loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tdiv ' + '$t' + str(1) + ',$t' + str(1) + ',$t' + str(2) + '\n' + storevar(1, quad.z))
     elif quad.op == '=':
-        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) +'\t\tbeq $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
+        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tbeq $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
     elif quad.op == '<':
-        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) +'\t\tblt $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
+        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tblt $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
     elif quad.op == '>':
-        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) +'\t\tbgt $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
+        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tbgt $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
     elif quad.op == '<=':
-        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) +'\t\tble $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
+        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tble $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
     elif quad.op == '>=':
-        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) +'\t\tbge $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
+        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tbge $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
     elif quad.op == '<>':
-        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) +'\t\tbne $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
+        ret = loadvar(quad.x, 1) + loadvar(quad.y, 2) + '\t\tbne $t' + str(1) + ',$t' + str(2) + ',L_' + str(quad.z)
     elif quad.op == ':=':
-        
-        ret = loadvar(quad.x,1) + storevar(1,quad.z)
+        ret = loadvar(quad.x, 1) + storevar(1, quad.z)
     elif quad.op == 'begin_block':
         flag = False
         if quad.x == main_program_name:
@@ -1601,81 +1587,69 @@ def FinalCode_Transformer(quad):
             nesting = 1
             for scope in List_after_delete_scope:
                 if scope.nestingLevel == 1:
-                    frameLengthValu = scope.getTotalOffset()
+                    frameLengthValue = scope.getTotalOffset()
             ret = '#---------------------------------------------\n\n'
-            
-             
-            ret = ret + '\tLmain:\n' + "\t\t" + 'addi $sp,$sp,' + str(frameLengthValu)+ '\n\t\t' + 'move $s0,$sp'
+            ret = ret + '\tLmain:\n' + "\t\t" + 'addi $sp,$sp,' + str(frameLengthValue) + '\n\t\t' + 'move $s0,$sp'
         else:
             currentScope = 0
             for scope in List_after_delete_scope:
                 if scope.nestingLevel > 1:
-                    listofentitys=scope.returnListOfEntitys()
-                    entity=listofentitys[0]
+                    listofentitys = scope.returnListOfEntitys()
+                    entity = listofentitys[0]
                     if entity.name == quad.x:
-                        frameLengthValu=entity.framelength
-                        nesting=scope.nestingLevel
+                        frameLengthValue = entity.framelength
+                        nesting = scope.nestingLevel
             ret = '#---------------------------------------------\n\n'
-            ret = ret + '\t' + quad.x + ':' + '\n\t\t'+ 'sw $ra,($sp)' 
+            ret = ret + '\t' + quad.x + ':' + '\n\t\t' + 'sw $ra,($sp)' 
     elif quad.op == 'end_block':
-    ##########
-        #flag=False
         if quad.x in procedureL:
-           
-            temp=scopeList.pop(0)
-            temp=temp.returnListOfEntitys()
-            temp=temp[0]
-            ret = '\t\tlw $ra,($sp)' + '\n\t\t'+ 'jr $ra'
-            
-            
-     ##########       
+            temp = scopeList.pop(0)
+            temp = temp.returnListOfEntitys()
+            temp = temp[0]
+            ret = '\t\tlw $ra,($sp)' + '\n\t\t' + 'jr $ra'
         elif quad.x in functionL:    
-            
-            temp=scopeList.pop(0)
-            temp=temp.returnListOfEntitys()
-            temp=temp[0]
+            temp = scopeList.pop(0)
+            temp = temp.returnListOfEntitys()
+            temp = temp[0]
             ret = '\t\tlw $ra,($sp)' + '\n\t\t'+ 'jr $ra'
         else:
-            ret=''
+            ret = ''
     elif quad.op == 'halt':
         ret = '\t\tli $v0,10\n\t\t' + 'syscall'
     elif quad.op == 'inp':
         v = searchScope(quad.x)
-        ret = '\t\tli $v0,5\n\t\t' + 'syscall\n\t\t' + '\n\t\tmove $t0,$v0\n\t\t' + storevar(0,v)
+        ret = '\t\tli $v0,5\n\t\t' + 'syscall\n\t\t' + '\n\t\tmove $t0,$v0\n\t\t' + storevar(0, v)
     elif quad.op == 'out':
         v = searchScope(quad.x)
-        ret = '\t\tli $v0,1\n' +loadvar(v.name,0)+ '\n\t\tmove $a0,$t0' + '\n\t\t' + 'syscall'   
+        ret = '\t\tli $v0,1\n' + loadvar(v.name, 0) + '\n\t\tmove $a0,$t0' + '\n\t\t' + 'syscall'   
     elif quad.op == 'retv':
-        ret = loadvar(quad.x,1) + "\t\tlw $t0,-8($sp)"+"\n\t\tsw $t1,($t0)"#+ "\n\t\tlw $ra,($sp)" + "\n\t\tjr $ra"      #+ '\t\tmove $v0,$t1\n\t\tlw $ra,($sp)' + '\n\t\tjr $ra'
+        ret = loadvar(quad.x, 1) + "\t\tlw $t0,-8($sp)" + "\n\t\tsw $t1,($t0)" #+ "\n\t\tlw $ra,($sp)" + "\n\t\tjr $ra"      #+ '\t\tmove $v0,$t1\n\t\tlw $ra,($sp)' + '\n\t\tjr $ra'
     elif quad.op == 'par' and quad.y == 'CV':
-        flag_num=0
-        if counter_fake ==0:
+        flag_num = 0
+        if counter_fake == 0:
             for q in quadList:
                 if q.ID == quad.ID:
                     flag_num = -1
                 elif flag_num == -1 and q.op == 'call':
                     flag_num = searchScope(q.x)
-                    frameLength=flag_num.framelength
+                    frameLength = flag_num.framelength
                     break
-
             ret = '\t\taddi $fp,$sp,' + str(frameLength) + '\n'
         else:
             ret = ''
-
-        temp = 12+4*counter_fake
-        counter_fake = counter_fake+ 1
-        ret = ret + loadvar(quad.x,1) + '\t\tsw $t1, -'+ str(temp) +'($fp)' ##όπου i ο αύξων αριθμός της παραμέτρου
+        temp = 12 + 4*counter_fake
+        counter_fake = counter_fake + 1
+        ret = ret + loadvar(quad.x, 1) + '\t\tsw $t1, -' + str(temp) + '($fp)' # Load everu actual parameter of subprogram inside the stack 
     elif quad.op == 'par' and quad.y == 'RET':
-        flag_num=0
-        if counter_fake ==0:
+        flag_num = 0
+        if counter_fake == 0:
             for q in quadList:
                 if q.ID == quad.ID:
                     flag_num = -1
                 elif flag_num == -1 and q.op == 'call':
                     flag_num = searchScope(q.x)
-                    frameLength=flag_num.framelength
+                    frameLength = flag_num.framelength
                     break
-
             ret = '\t\taddi $fp,$sp,' + str(frameLength) + '\n'
         else:
             ret = ''
@@ -1683,60 +1657,52 @@ def FinalCode_Transformer(quad):
         counter_fake = counter_fake+1
         ret = ret + '\t\taddi $t0,$sp,-'+ str(s.offset) + '\n\t\tsw $t0,-8($fp)'
     elif quad.op == 'par' and quad.y == 'REF':
-        
-        flag_num=0
-        if counter_fake ==0:
+        flag_num = 0
+        if counter_fake == 0:
             for q in quadList:
                 if q.ID == quad.ID:
                     flag_num = -1
                 elif flag_num == -1 and q.op == 'call':
                     flag_num = searchScope(q.x)
-                    frameLength=flag_num.framelength
+                    frameLength = flag_num.framelength
                     break
             ret = '\t\taddi $fp,$sp,' + str(frameLength) + '\n'
         else:
             ret = ''
-
+        
         temp = 12 + 4 * counter_fake
         counter_fake = counter_fake + 1
         v = searchScope(quad.x.strip())
-        scope=scopeList[0]
-        localVar=scope.varLocal(v.name)
-        ret ='Error!!!!'
+        scope = scopeList[0]
+        localVar = scope.varLocal(v.name)
+        ret = 'Error!!!!'
+        
         for scope in scopeList:
             if 1 == scope.varLocal(v.name):
-                variableNesting=scope.nestingLevel
-
+                variableNesting = scope.nestingLevel
         if nesting == variableNesting or v.parMode == 'in' and localVar == 1:
-            
-            ret = '\t\taddi $t0,$sp,-'+ str(v.offset) + '\n\t\tsw $t0,-'+ str(temp) +'($fp)'
+            ret = '\t\taddi $t0,$sp,-' + str(v.offset) + '\n\t\tsw $t0,-' + str(temp) +'($fp)'
         elif nesting == variableNesting or v.parMode == 'inout':
-            
-            ret = '\t\tlw $t0,-'+str(v.offset)+'($sp)' +'\n\t\tsw $t0,-'+str(temp) +'($fp)'
+            ret = '\t\tlw $t0,-' + str(v.offset) + '($sp)' +'\n\t\tsw $t0,-' + str(temp) + '($fp)'
         elif nesting != variableNesting or localVar ==1 or v.parMode == 'in':
-            
-            ret = gnlvcode(v.name) + '\t\tsw $t0,-' +str(temp) +'($fp)'
+            ret = gnlvcode(v.name) + '\t\tsw $t0,-' + str(temp) +'($fp)'
         elif nesting != variableNesting or v.parMode=='inout':
-            
             ret = gnlvcode(v.name) + '\t\tlw $t0,($t0)' + '\n\t\tsw $t0,-' + str(temp) + '($fp)'
     elif quad.op == 'call':
         for scope in List_after_delete_scope:
-            entityList= scope.returnListOfEntitys()
+            entityList = scope.returnListOfEntitys()
             for ent in entityList:
-                if ent.name == quad.x and counter_fake >0:
-                    i=scope.nestingLevel
-                    counter_fake=0
-                    
-        frameLengthValu=searchScope(quad.x)
-        if i == nesting:
+                if ent.name == quad.x and counter_fake > 0:
+                    i = scope.nestingLevel
+                    counter_fake = 0
+        frameLengthValue = searchScope(quad.x)
+        if i  ==  nesting:
             ret = '\t\tlw $t0,-4($sp)\n' + '\t\tsw $t0,-4($fp)\n'   
         else:
             ret = '\t\tsw $sp,-4($fp)\n'                            
-       
-        ret =ret + '\t\taddi $sp,$sp,'+str(frameLengthValu.framelength) + '\n\t\tjal '+ quad.x + '\n\t\taddi $sp,$sp,'+ str(-frameLengthValu.framelength)  
+        ret = ret + '\t\taddi $sp,$sp,' + str(frameLengthValue.framelength) + '\n\t\tjal ' + quad.x + '\n\t\taddi $sp,$sp,' + str(-frameLengthValue.framelength)  
     else:
         ret = "Error: Cannot convert instructions to assembly!!!!"
-
     if flag == True:
         ret = '\tL_' + str(quad.ID) + ': \n' + ret
     return ret
@@ -1745,69 +1711,60 @@ def FinalCode_Generator_File(finalCodeFile):
 
     global counter_fake,quadList
     
-    counter_fake=0
+    counter_fake = 0
     finalCodeFile.write('#---------------------------------Global data as used in main \n')
-
     finalCodeFile.write('\t.text\n')
     finalCodeFile.write('\tj Lmain\n')
     for quad in quadList:
         q = FinalCode_Transformer(quad)
-        
-        finalCodeFile.write(q +'\t\t# '+ "%s" % int(quad.ID)+":"+str(quad.op)+"," +
-                    str(quad.x)+","+str(quad.y)+","+str(quad.z)+ '\n')
-
-
-
+        finalCodeFile.write(q +'\t\t# ' + "%s" % int(quad.ID) + ":" + str(quad.op) + "," +
+                    str(quad.x) + "," + str(quad.y) + "," + str(quad.z) + '\n')
 
 def main(args):
-    global infile,quadList,intFile,cFile,list_of_variables,have_sub_program,scopeList,SymbolTableFile
+    global infile, quadList, intFile, cFile, list_of_variables, have_sub_program, scopeList, SymbolTableFile
 	
-    if(len(args) !=2):
+    if(len(args) != 2):
         print("Error in parsing: Not enough arguments. Files are missing!")
+        print("Usage: python3 cimple.py <Test_Filename>")
         sys.exit()
-		
-    in_file=args[1]
+    in_file = args[1]
     if (not in_file.endswith('.ci')):
         print("Error: The file should end with '.ci' ")
-        exit()	
-	
+        exit()
     try:
         infile = open(in_file, "r")
         intFile = open("int_file.int","w")
-        
     except OSError:
         print("Error: The system cannot open the file!")
         sys.exit()
-      		
+    
     syntax_analyze()
     intFileGen()
     Symasiologikh_analysh()
-    scopeList=List_after_delete_scope.copy()
+    scopeList = List_after_delete_scope.copy()
+    
     try:
-        SymbolTableFile = open("SymbolTableFile.txt","w")
-     
+        SymbolTableFile = open("SymbolTableFile.txt","w") 
     except OSError:
-        print("Error: The system cannot open the file!")
+        print("Error: The system cannot open the file!!!")
         sys.exit()
+    
     printSymbolTable()
     SymbolTableFile.close()
-    if have_sub_program==False:
+    
+    if have_sub_program == False:
         try:
             cFile = open("C_file.c","w")
-       
-        
         except OSError:
-            print("Error: The system cannot open the file!")
+            print("Error: The system cannot open the file!!!")
             sys.exit()
-            
-        
         cFileGen()
         cFile.close()
-   
+
     finaclCodeFile = ".asm"
-    fCode= open("final.asm",'w')
+    fCode = open("final.asm",'w')
     FinalCode_Generator_File(fCode)
-    scopeList=List_after_delete_scope.copy()
+    scopeList = List_after_delete_scope.copy()
     
     infile.close()
     intFile.close()
