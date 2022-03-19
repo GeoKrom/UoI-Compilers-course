@@ -7,8 +7,9 @@ It is a semester project for the course CSE/MYY802 - Compilers, Department of Co
 # How to run
 
 In order to run the compiler with the tests, open a terminal and write the command
-
+```bash
 python3 cimple.py test.ci
+```
 
 # Front - End
 
